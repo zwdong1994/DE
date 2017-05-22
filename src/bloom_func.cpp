@@ -44,3 +44,15 @@ int bloom::init_bloom(int element_count, double false_positive_prob) {
     return 1;
 }
 
+int bloom::bloom_insert(std::string add_str){
+   bloom_fil_instance.insert(add_str);
+   return 1;
+}
+
+bool bloom::bloom_exist(std::string com_str){
+   if (bloom_fil_instance.contains(com_str)) {
+      return TRUE;
+   }
+   else
+      return FALSE;
+}

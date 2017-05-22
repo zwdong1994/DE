@@ -5,6 +5,9 @@
 #ifndef ED_BLOOM_FUNC_H
 #define ED_BLOOM_FUNC_H
 
+#define TRUE 1
+#define FALSE 0
+
 #include "bloom_filter.hpp"
 class bloom{
 private:
@@ -19,6 +22,8 @@ private:
 public:
     static bloom *Get_bloom();
     static bloom *bloom_instance;
+    int bloom_insert(std::string add_str);
+    bool bloom_exist(std::string com_str);
 
 };
 #endif //ED_BLOOM_FUNC_H
