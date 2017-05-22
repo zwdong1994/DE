@@ -1,10 +1,13 @@
 file(REMOVE_RECURSE
   "CMakeFiles/ed.dir/main.cpp.o"
+  "CMakeFiles/ed.dir/src/bch.c.o"
+  "CMakeFiles/ed.dir/src/com_t.cpp.o"
+  "CMakeFiles/ed.dir/src/bloom_func.cpp.o"
   "ed.pdb"
   "ed"
 )
 
 # Per-language clean rules from dependency scanning.
-foreach(lang CXX)
+foreach(lang C CXX)
   include(CMakeFiles/ed.dir/cmake_clean_${lang}.cmake OPTIONAL)
 endforeach()

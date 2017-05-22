@@ -81,19 +81,97 @@ CMakeFiles/ed.dir/main.cpp.o.provides: CMakeFiles/ed.dir/main.cpp.o.requires
 CMakeFiles/ed.dir/main.cpp.o.provides.build: CMakeFiles/ed.dir/main.cpp.o
 
 
+CMakeFiles/ed.dir/src/bch.c.o: CMakeFiles/ed.dir/flags.make
+CMakeFiles/ed.dir/src/bch.c.o: ../src/bch.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/victor/zwd/ecc_dedup/ed/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/ed.dir/src/bch.c.o"
+	g++  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ed.dir/src/bch.c.o   -c /home/victor/zwd/ecc_dedup/ed/src/bch.c
+
+CMakeFiles/ed.dir/src/bch.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ed.dir/src/bch.c.i"
+	g++  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/victor/zwd/ecc_dedup/ed/src/bch.c > CMakeFiles/ed.dir/src/bch.c.i
+
+CMakeFiles/ed.dir/src/bch.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ed.dir/src/bch.c.s"
+	g++  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/victor/zwd/ecc_dedup/ed/src/bch.c -o CMakeFiles/ed.dir/src/bch.c.s
+
+CMakeFiles/ed.dir/src/bch.c.o.requires:
+
+.PHONY : CMakeFiles/ed.dir/src/bch.c.o.requires
+
+CMakeFiles/ed.dir/src/bch.c.o.provides: CMakeFiles/ed.dir/src/bch.c.o.requires
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/bch.c.o.provides.build
+.PHONY : CMakeFiles/ed.dir/src/bch.c.o.provides
+
+CMakeFiles/ed.dir/src/bch.c.o.provides.build: CMakeFiles/ed.dir/src/bch.c.o
+
+
+CMakeFiles/ed.dir/src/com_t.cpp.o: CMakeFiles/ed.dir/flags.make
+CMakeFiles/ed.dir/src/com_t.cpp.o: ../src/com_t.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/victor/zwd/ecc_dedup/ed/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/ed.dir/src/com_t.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ed.dir/src/com_t.cpp.o -c /home/victor/zwd/ecc_dedup/ed/src/com_t.cpp
+
+CMakeFiles/ed.dir/src/com_t.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ed.dir/src/com_t.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/victor/zwd/ecc_dedup/ed/src/com_t.cpp > CMakeFiles/ed.dir/src/com_t.cpp.i
+
+CMakeFiles/ed.dir/src/com_t.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ed.dir/src/com_t.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/victor/zwd/ecc_dedup/ed/src/com_t.cpp -o CMakeFiles/ed.dir/src/com_t.cpp.s
+
+CMakeFiles/ed.dir/src/com_t.cpp.o.requires:
+
+.PHONY : CMakeFiles/ed.dir/src/com_t.cpp.o.requires
+
+CMakeFiles/ed.dir/src/com_t.cpp.o.provides: CMakeFiles/ed.dir/src/com_t.cpp.o.requires
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/com_t.cpp.o.provides.build
+.PHONY : CMakeFiles/ed.dir/src/com_t.cpp.o.provides
+
+CMakeFiles/ed.dir/src/com_t.cpp.o.provides.build: CMakeFiles/ed.dir/src/com_t.cpp.o
+
+
+CMakeFiles/ed.dir/src/bloom_func.cpp.o: CMakeFiles/ed.dir/flags.make
+CMakeFiles/ed.dir/src/bloom_func.cpp.o: ../src/bloom_func.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/victor/zwd/ecc_dedup/ed/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ed.dir/src/bloom_func.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ed.dir/src/bloom_func.cpp.o -c /home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp
+
+CMakeFiles/ed.dir/src/bloom_func.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ed.dir/src/bloom_func.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp > CMakeFiles/ed.dir/src/bloom_func.cpp.i
+
+CMakeFiles/ed.dir/src/bloom_func.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ed.dir/src/bloom_func.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp -o CMakeFiles/ed.dir/src/bloom_func.cpp.s
+
+CMakeFiles/ed.dir/src/bloom_func.cpp.o.requires:
+
+.PHONY : CMakeFiles/ed.dir/src/bloom_func.cpp.o.requires
+
+CMakeFiles/ed.dir/src/bloom_func.cpp.o.provides: CMakeFiles/ed.dir/src/bloom_func.cpp.o.requires
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/bloom_func.cpp.o.provides.build
+.PHONY : CMakeFiles/ed.dir/src/bloom_func.cpp.o.provides
+
+CMakeFiles/ed.dir/src/bloom_func.cpp.o.provides.build: CMakeFiles/ed.dir/src/bloom_func.cpp.o
+
+
 # Object files for target ed
 ed_OBJECTS = \
-"CMakeFiles/ed.dir/main.cpp.o"
+"CMakeFiles/ed.dir/main.cpp.o" \
+"CMakeFiles/ed.dir/src/bch.c.o" \
+"CMakeFiles/ed.dir/src/com_t.cpp.o" \
+"CMakeFiles/ed.dir/src/bloom_func.cpp.o"
 
 # External object files for target ed
 ed_EXTERNAL_OBJECTS =
 
 ed: CMakeFiles/ed.dir/main.cpp.o
+ed: CMakeFiles/ed.dir/src/bch.c.o
+ed: CMakeFiles/ed.dir/src/com_t.cpp.o
+ed: CMakeFiles/ed.dir/src/bloom_func.cpp.o
 ed: CMakeFiles/ed.dir/build.make
 ed: /usr/lib/x86_64-linux-gnu/librt.so
 ed: /usr/lib/x86_64-linux-gnu/libcrypto.a
 ed: CMakeFiles/ed.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/victor/zwd/ecc_dedup/ed/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ed"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/victor/zwd/ecc_dedup/ed/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable ed"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ed.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -102,6 +180,9 @@ CMakeFiles/ed.dir/build: ed
 .PHONY : CMakeFiles/ed.dir/build
 
 CMakeFiles/ed.dir/requires: CMakeFiles/ed.dir/main.cpp.o.requires
+CMakeFiles/ed.dir/requires: CMakeFiles/ed.dir/src/bch.c.o.requires
+CMakeFiles/ed.dir/requires: CMakeFiles/ed.dir/src/com_t.cpp.o.requires
+CMakeFiles/ed.dir/requires: CMakeFiles/ed.dir/src/bloom_func.cpp.o.requires
 
 .PHONY : CMakeFiles/ed.dir/requires
 

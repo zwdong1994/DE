@@ -150,6 +150,87 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+src/bch.o: src/bch.c.o
+
+.PHONY : src/bch.o
+
+# target to build an object file
+src/bch.c.o:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/bch.c.o
+.PHONY : src/bch.c.o
+
+src/bch.i: src/bch.c.i
+
+.PHONY : src/bch.i
+
+# target to preprocess a source file
+src/bch.c.i:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/bch.c.i
+.PHONY : src/bch.c.i
+
+src/bch.s: src/bch.c.s
+
+.PHONY : src/bch.s
+
+# target to generate assembly for a file
+src/bch.c.s:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/bch.c.s
+.PHONY : src/bch.c.s
+
+src/bloom_func.o: src/bloom_func.cpp.o
+
+.PHONY : src/bloom_func.o
+
+# target to build an object file
+src/bloom_func.cpp.o:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/bloom_func.cpp.o
+.PHONY : src/bloom_func.cpp.o
+
+src/bloom_func.i: src/bloom_func.cpp.i
+
+.PHONY : src/bloom_func.i
+
+# target to preprocess a source file
+src/bloom_func.cpp.i:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/bloom_func.cpp.i
+.PHONY : src/bloom_func.cpp.i
+
+src/bloom_func.s: src/bloom_func.cpp.s
+
+.PHONY : src/bloom_func.s
+
+# target to generate assembly for a file
+src/bloom_func.cpp.s:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/bloom_func.cpp.s
+.PHONY : src/bloom_func.cpp.s
+
+src/com_t.o: src/com_t.cpp.o
+
+.PHONY : src/com_t.o
+
+# target to build an object file
+src/com_t.cpp.o:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/com_t.cpp.o
+.PHONY : src/com_t.cpp.o
+
+src/com_t.i: src/com_t.cpp.i
+
+.PHONY : src/com_t.i
+
+# target to preprocess a source file
+src/com_t.cpp.i:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/com_t.cpp.i
+.PHONY : src/com_t.cpp.i
+
+src/com_t.s: src/com_t.cpp.s
+
+.PHONY : src/com_t.s
+
+# target to generate assembly for a file
+src/com_t.cpp.s:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/com_t.cpp.s
+.PHONY : src/com_t.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,6 +243,15 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... src/bch.o"
+	@echo "... src/bch.i"
+	@echo "... src/bch.s"
+	@echo "... src/bloom_func.o"
+	@echo "... src/bloom_func.i"
+	@echo "... src/bloom_func.s"
+	@echo "... src/com_t.o"
+	@echo "... src/com_t.i"
+	@echo "... src/com_t.s"
 .PHONY : help
 
 
