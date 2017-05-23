@@ -8,7 +8,7 @@
 #include <iomanip>
 
 bloom::bloom() {
-
+    init_bloom(10000000, 0.000001);
 }
 
 bloom::~bloom() {
@@ -29,9 +29,9 @@ bloom* bloom::Get_bloom() {
     return bloom_instance;
 }
 
-int bloom::init_bloom(int element_count, double false_positive_prob) {
-    para.projected_element_count = 10000000;
-    para.false_positive_probability = 0.000001;
+int bloom::init_bloom(unsigned long long element_count, double false_positive_prob) {
+    para.projected_element_count = element_count;
+    para.false_positive_probability = false_positive_prob;
     para.random_seed = 0xA5A5A5A5;
 
     if(!para){

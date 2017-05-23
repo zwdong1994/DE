@@ -16,7 +16,7 @@ private:
     bloom& operator=(bloom const&);
     ~bloom();
     bloom_parameters para;
-    int init_bloom(int element_count, double false_positive_prob);
+    int init_bloom(unsigned long long element_count, double false_positive_prob);
     bloom_filter bloom_fil_instance;
 
 public:
