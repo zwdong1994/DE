@@ -6,3 +6,16 @@
 #include <iostream>
 #include <map>
 
+cache::cache(){
+
+}
+
+cache::~cache(){
+
+}
+
+cache* cache_instance = NULL;
+
+cache* cache::Get_cache(){
+
+}
