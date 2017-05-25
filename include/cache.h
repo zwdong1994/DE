@@ -20,7 +20,7 @@ private:
 public:
     static cache *Get_cache();
     static cache *cache_instance;
-    int cache_insert(char ECC_code[], char Chunk_reference[]);
+    int cache_insert(char ECC_code[], char Chunk_reference[], int ECC_length);
 };
 
 

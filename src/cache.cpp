@@ -29,7 +29,7 @@ cache* cache::Get_cache(){
     return cache_instance;
 }
 
-int cache::cache_insert(char *ECC_code, char *Chunk_reference) {
+int cache::cache_insert(char *ECC_code, char *Chunk_reference, int ECC_length) {
     return 0;
 }
 
