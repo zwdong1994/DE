@@ -10,5 +10,6 @@ link_libraries("/usr/lib/x86_64-linux-gnu/libcrypto.a")
 link_directories(/lib/x86_64-linux-gnu)
 
 set(SOURCE_FILES main.cpp include/bch.h include/bloom_filter.hpp include/com_t.h include/tpdef.h
-                    src/bch.c src/com_t.cpp src/bloom_func.cpp include/bloom_func.h)
+                    src/bch.c src/com_t.cpp src/bloom_func.cpp include/bloom_func.h src/cache.cpp
+                    include/cache.h)
 add_executable(ed ${SOURCE_FILES})
