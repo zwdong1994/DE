@@ -95,6 +95,9 @@
 		<Unit filename="/home/victor/zwd/ecc_dedup/ed/include/bloom_func.h">
 			<Option target="ed"/>
 		</Unit>
+		<Unit filename="/home/victor/zwd/ecc_dedup/ed/include/cache.h">
+			<Option target="ed"/>
+		</Unit>
 		<Unit filename="/home/victor/zwd/ecc_dedup/ed/include/com_t.h">
 			<Option target="ed"/>
 		</Unit>
@@ -108,6 +111,9 @@
 			<Option target="ed"/>
 		</Unit>
 		<Unit filename="/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp">
+			<Option target="ed"/>
+		</Unit>
+		<Unit filename="/home/victor/zwd/ecc_dedup/ed/src/cache.cpp">
 			<Option target="ed"/>
 		</Unit>
 		<Unit filename="/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp">

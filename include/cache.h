@@ -5,22 +5,38 @@
 #ifndef ED_CACHE_H
 #define ED_CACHE_H
 
+#define MAX_CACHE_SIZE 10000;
+#define CHUNK_SIZE 4096
+
 class cache{
 private:
     cache();
     cache(cache const&);
     cache &operator = (cache const&);
     ~cache();
-    std::map<std::string, std::string> chunk_container; //save(ECC code, Chunk_reference)
     struct cache_list{
-        std::string append_ecc_code;  //ecc+exist_number(exist_number:0 represent not repetition, 1...n represent exist number)
+        std::string code;
         struct cache_list *next;
-    }*head_cache;
+        struct cache_list *prev;
+    };
+    struct Code_chunk{
+        uint8_t chunk[4096];
+        struct Code_chunk *next; //point to the next same ecc code or hash code, but the chunk reference are different
+    };
+    struct cache_list *head_cache;
+    struct cache_list *tail_cache;
+    std::map<std::string, struct Code_chunk *> chunk_container; //save(ECC or hash code, Chunk_reference)
+    int cache_size;
+    int cache_insert(char code[], char Chunk_reference[], int code_length); //add new member of ecc and resort the cache
+    int cache_update(char code[], int code_length);
+    int comp_chunk(char Chunk_reference[], struct Code_chunk *chunk_info);
+
 
 public:
     static cache *Get_cache();
     static cache *cache_instance;
-    int cache_insert(char ECC_code[], char Chunk_reference[], int ECC_length);
+    int cache_find(char code[], char chunk_reference[], int code_length);
+
 };
 
 

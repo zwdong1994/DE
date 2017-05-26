@@ -204,6 +204,33 @@ src/bloom_func.cpp.s:
 	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/bloom_func.cpp.s
 .PHONY : src/bloom_func.cpp.s
 
+src/cache.o: src/cache.cpp.o
+
+.PHONY : src/cache.o
+
+# target to build an object file
+src/cache.cpp.o:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/cache.cpp.o
+.PHONY : src/cache.cpp.o
+
+src/cache.i: src/cache.cpp.i
+
+.PHONY : src/cache.i
+
+# target to preprocess a source file
+src/cache.cpp.i:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/cache.cpp.i
+.PHONY : src/cache.cpp.i
+
+src/cache.s: src/cache.cpp.s
+
+.PHONY : src/cache.s
+
+# target to generate assembly for a file
+src/cache.cpp.s:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/cache.cpp.s
+.PHONY : src/cache.cpp.s
+
 src/com_t.o: src/com_t.cpp.o
 
 .PHONY : src/com_t.o
@@ -249,6 +276,9 @@ help:
 	@echo "... src/bloom_func.o"
 	@echo "... src/bloom_func.i"
 	@echo "... src/bloom_func.s"
+	@echo "... src/cache.o"
+	@echo "... src/cache.i"
+	@echo "... src/cache.s"
 	@echo "... src/com_t.o"
 	@echo "... src/com_t.i"
 	@echo "... src/com_t.s"
