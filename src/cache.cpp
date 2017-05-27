@@ -32,14 +32,22 @@ cache* cache::Get_cache(){
     return cache_instance;
 }
 
-int cache::cache_insert(char *code, int code_length) {
+int cache::cache_insert(char *code, char chunk_reference[], int code_length) {
     struct cache_list *add_member = new cache_list;
-    char mid_code[code_length+1];
-    
-    memcpy(mid_code, code, code_length);
-    mid_code[code_length] = '\0';
+    std::string mid_code;
+    struct Code_chunk *new_code_chunk = NULL;
+
+    new_code_chunk = new Code_chunk;
+    new_code_chunk -> next = NULL;
+    memcpy(new_code_chunk -> chunk, chunk_reference, CHUNK_SIZE);
+    chunk_container[mid_code] = new_code_chunk;
+
+    code[code_length] = '\0';
+    mid_code = code;
 
     if(head_cache == NULL){ //cache is empty
+
+
         add_member -> code = mid_code;
         add_member -> next = NULL;
         add_member -> prev = NULL;
@@ -49,6 +57,7 @@ int cache::cache_insert(char *code, int code_length) {
     }
     else{
         if(cache_size == 1){ //cache contained only one member
+
             add_member -> code = mid_code;
             add_member -> next = head_cache;
             head_cache -> next = add_member;
@@ -60,6 +69,7 @@ int cache::cache_insert(char *code, int code_length) {
             return 1;
         }
         else if( cache_size == MAX_CACHE_SIZE) {
+
             add_member -> code = mid_code;
             add_member -> next = head_cache;
             tail_cache -> next = add_member;
@@ -71,10 +81,11 @@ int cache::cache_insert(char *code, int code_length) {
             head_cache -> prev = tail_cache -> prev;
             delete tail_cache;
             tail_cache = head_cache -> prev;
-
+            chunk_container.erase(mid_code); //delete the tail member in the R-BTree
             return 1;
         }
         else{ //cache contained more than one member
+
             add_member -> code = mid_code;
             add_member -> next = head_cache;
             tail_cache -> next = add_member;
@@ -116,7 +127,7 @@ int cache::cache_find(char *code, char *chunk_reference, int code_length) {
         }
     }
     else{ //the ecc is not in the cache, so insert it into the cache
-        if(!cache_insert(code, code_length)){//insert error
+        if(!cache_insert(code, chunk_reference, code_length)){//insert error
             std::cout<<"cache insert error!"<<std::endl;
             exit(-1);
         }
@@ -127,7 +138,7 @@ int cache::cache_find(char *code, char *chunk_reference, int code_length) {
 int cache::comp_chunk(char *Chunk_reference, struct Code_chunk *chunk_info) {
     struct Code_chunk *p = chunk_info;
     while(p!=NULL){
-        if(memcmp(Chunk_reference, p -> chunk, CHUNK_SIZE)){ //chunk exist
+        if(!memcmp(Chunk_reference, p -> chunk, CHUNK_SIZE)){ //chunk exist
             return 1;
         }
         p = p->next;
@@ -141,9 +152,9 @@ int cache::cache_update(char *code, int code_length) {
         return 1;
     else if(cache_size == 2){
         std::string mid_str;
-        char mid_code[code_length+1];
-        mid_code[code_length] = '\0';
-        mid_str = mid_code;
+
+        code[code_length] = '\0';
+        mid_str = code;
         if(mid_str.compare(head_cache -> code) == 0)
             return 1;
         else if(mid_str.compare(tail_cache -> code) == 0){
@@ -156,20 +167,28 @@ int cache::cache_update(char *code, int code_length) {
     }
     else {
         std::string mid_str;
-        char mid_code[code_length+1];
-        memcpy(mid_code, code, code_length);
-        mid_code[code_length] = '\0';
-        mid_str = mid_code;
+        code[code_length] = '\0';
+        mid_str = code;
         while (mid_member->next != head_cache) { //the member is not tail member
             if(mid_str.compare(mid_member -> code) == 0){
-                mid_member -> prev -> next = mid_member -> next;
-                mid_member -> next -> prev = mid_member -> prev;
+                if(mid_member == head_cache)
+                    return 1;
+                else if(mid_member == tail_cache){
+                    head_cache = tail_cache;
+                    tail_cache = tail_cache -> prev;
+                    return 1;
+                }
+                else {
+                    mid_member->prev->next = mid_member->next;
+                    mid_member->next->prev = mid_member->prev;
 
-                mid_member -> next = head_cache;
-                tail_cache -> next = mid_member;
-                head_cache -> prev = mid_member;
-                mid_member -> prev = tail_cache;
-                return 1;
+                    mid_member->next = head_cache;
+                    tail_cache->next = mid_member;
+                    head_cache->prev = mid_member;
+                    mid_member->prev = tail_cache;
+                    head_cache = mid_member;
+                    return 1;
+                }
             }
             else
                 mid_member = mid_member -> next;
