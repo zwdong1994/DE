@@ -5,7 +5,7 @@
 #ifndef ED_CACHE_H
 #define ED_CACHE_H
 
-#define MAX_CACHE_SIZE 10000;
+#define MAX_CACHE_SIZE 10000
 #define CHUNK_SIZE 4096
 
 class cache{
@@ -27,7 +27,7 @@ private:
     struct cache_list *tail_cache;
     std::map<std::string, struct Code_chunk *> chunk_container; //save(ECC or hash code, Chunk_reference)
     int cache_size;
-    int cache_insert(char code[], char Chunk_reference[], int code_length); //add new member of ecc and resort the cache
+    int cache_insert(char code[], int code_length); //add new member of ecc and resort the cache
     int cache_update(char code[], int code_length);
     int comp_chunk(char Chunk_reference[], struct Code_chunk *chunk_info);
 
