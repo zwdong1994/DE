@@ -35,7 +35,7 @@ private:
 public:
     static cache *Get_cache();
     static cache *cache_instance;
-    int cache_find(char code[], char chunk_reference[], int code_length);
+    int cache_find(char code[], char chunk_reference[], int code_length);//0 represent cache miss, 1 means hit, 2 means ecc crash
 
 };
 

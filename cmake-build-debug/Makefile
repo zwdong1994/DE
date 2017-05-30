@@ -258,6 +258,33 @@ src/com_t.cpp.s:
 	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/com_t.cpp.s
 .PHONY : src/com_t.cpp.s
 
+src/map.o: src/map.cpp.o
+
+.PHONY : src/map.o
+
+# target to build an object file
+src/map.cpp.o:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/map.cpp.o
+.PHONY : src/map.cpp.o
+
+src/map.i: src/map.cpp.i
+
+.PHONY : src/map.i
+
+# target to preprocess a source file
+src/map.cpp.i:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/map.cpp.i
+.PHONY : src/map.cpp.i
+
+src/map.s: src/map.cpp.s
+
+.PHONY : src/map.s
+
+# target to generate assembly for a file
+src/map.cpp.s:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/map.cpp.s
+.PHONY : src/map.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -282,6 +309,9 @@ help:
 	@echo "... src/com_t.o"
 	@echo "... src/com_t.i"
 	@echo "... src/com_t.s"
+	@echo "... src/map.o"
+	@echo "... src/map.i"
+	@echo "... src/map.s"
 .PHONY : help
 
 

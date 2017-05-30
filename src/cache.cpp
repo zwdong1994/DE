@@ -36,6 +36,9 @@ int cache::cache_insert(char *code, char chunk_reference[], int code_length) {
     struct cache_list *add_member = new cache_list;
     std::string mid_code;
     struct Code_chunk *new_code_chunk = NULL;
+    code[code_length] = '\0';
+
+    mid_code = code;
 
     new_code_chunk = new Code_chunk;
     new_code_chunk -> next = NULL;
