@@ -15,10 +15,7 @@ private:
     map(map const&);
     map &operator = (map const&);
     ~map();
-    struct addr{
-        unsigned long offset; //block address
-        struct addr *next;
-    };
+
     unsigned int ssd_capacity;
     unsigned long max_size_addr; //the maximum block address
     unsigned long alloc_addr_point;
@@ -31,6 +28,11 @@ public:
     struct addr* Get_addr(char ecc_code[], int length_ecc);  //get the chunk addr from the map list
     int insert_map(char ecc_code[], char chunk_reference[], int length_ecc); //insert a new ecc-addr pair to the map list and in the mean time write the block
     int write_block(struct addr *write_addr, char chunk_reference[]);
+    int read_block(struct addr* write_addr, char chunk_reference[]);
+    struct addr{
+        unsigned long offset; //block address
+        struct addr *next;
+    };
 };
 
 

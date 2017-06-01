@@ -27,7 +27,7 @@ private:
     struct cache_list *tail_cache;
     std::map<std::string, struct Code_chunk *> chunk_container; //save(ECC or hash code, Chunk_reference)
     int cache_size;
-    int cache_insert(char code[], char chunk_reference[], int code_length); //add new member of ecc and resort the cache
+
     int cache_update(char code[], int code_length);
     int comp_chunk(char Chunk_reference[], struct Code_chunk *chunk_info);
 
@@ -36,7 +36,7 @@ public:
     static cache *Get_cache();
     static cache *cache_instance;
     int cache_find(char code[], char chunk_reference[], int code_length);//0 represent cache miss, 1 means hit, 2 means ecc crash
-
+    int cache_insert(char code[], char chunk_reference[], int code_length); //add new member of ecc and resort the cache
 };
 
 

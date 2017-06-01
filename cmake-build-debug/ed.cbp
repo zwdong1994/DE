@@ -101,6 +101,9 @@
 		<Unit filename="/home/victor/zwd/ecc_dedup/ed/include/com_t.h">
 			<Option target="ed"/>
 		</Unit>
+		<Unit filename="/home/victor/zwd/ecc_dedup/ed/include/dedup.h">
+			<Option target="ed"/>
+		</Unit>
 		<Unit filename="/home/victor/zwd/ecc_dedup/ed/include/map.h">
 			<Option target="ed"/>
 		</Unit>
@@ -120,6 +123,9 @@
 			<Option target="ed"/>
 		</Unit>
 		<Unit filename="/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp">
+			<Option target="ed"/>
+		</Unit>
+		<Unit filename="/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp">
 			<Option target="ed"/>
 		</Unit>
 		<Unit filename="/home/victor/zwd/ecc_dedup/ed/src/map.cpp">

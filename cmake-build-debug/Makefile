@@ -258,6 +258,33 @@ src/com_t.cpp.s:
 	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/com_t.cpp.s
 .PHONY : src/com_t.cpp.s
 
+src/dedup.o: src/dedup.cpp.o
+
+.PHONY : src/dedup.o
+
+# target to build an object file
+src/dedup.cpp.o:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/dedup.cpp.o
+.PHONY : src/dedup.cpp.o
+
+src/dedup.i: src/dedup.cpp.i
+
+.PHONY : src/dedup.i
+
+# target to preprocess a source file
+src/dedup.cpp.i:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/dedup.cpp.i
+.PHONY : src/dedup.cpp.i
+
+src/dedup.s: src/dedup.cpp.s
+
+.PHONY : src/dedup.s
+
+# target to generate assembly for a file
+src/dedup.cpp.s:
+	$(MAKE) -f CMakeFiles/ed.dir/build.make CMakeFiles/ed.dir/src/dedup.cpp.s
+.PHONY : src/dedup.cpp.s
+
 src/map.o: src/map.cpp.o
 
 .PHONY : src/map.o
@@ -309,6 +336,9 @@ help:
 	@echo "... src/com_t.o"
 	@echo "... src/com_t.i"
 	@echo "... src/com_t.s"
+	@echo "... src/dedup.o"
+	@echo "... src/dedup.i"
+	@echo "... src/dedup.s"
 	@echo "... src/map.o"
 	@echo "... src/map.i"
 	@echo "... src/map.s"

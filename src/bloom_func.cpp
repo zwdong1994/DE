@@ -53,6 +53,8 @@ bool bloom::bloom_exist(std::string com_str){
    if (bloom_fil_instance.contains(com_str)) {
       return TRUE;
    }
-   else
-      return FALSE;
+   else{
+       bloom_insert(com_str);
+       return FALSE;
+   }
 }

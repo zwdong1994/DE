@@ -5,6 +5,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/ed.dir/src/bloom_func.cpp.o"
   "CMakeFiles/ed.dir/src/cache.cpp.o"
   "CMakeFiles/ed.dir/src/map.cpp.o"
+  "CMakeFiles/ed.dir/src/dedup.cpp.o"
   "ed.pdb"
   "ed"
 )
