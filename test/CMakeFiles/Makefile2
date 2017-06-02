@@ -60,13 +60,50 @@ CMAKE_SOURCE_DIR = /home/victor/zwd/ecc_dedup/ed/test
 CMAKE_BINARY_DIR = /home/victor/zwd/ecc_dedup/ed/test
 
 #=============================================================================
+# Target rules for target CMakeFiles/test_cache.dir
+
+# All Build rule for target.
+CMakeFiles/test_cache.dir/all:
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/depend
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/victor/zwd/ecc_dedup/ed/test/CMakeFiles --progress-num=7,8,9,10,11,12 "Built target test_cache"
+.PHONY : CMakeFiles/test_cache.dir/all
+
+# Include target in all.
+all: CMakeFiles/test_cache.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_cache.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/victor/zwd/ecc_dedup/ed/test/CMakeFiles 6
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test_cache.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/victor/zwd/ecc_dedup/ed/test/CMakeFiles 0
+.PHONY : CMakeFiles/test_cache.dir/rule
+
+# Convenience name for target.
+test_cache: CMakeFiles/test_cache.dir/rule
+
+.PHONY : test_cache
+
+# clean rule for target.
+CMakeFiles/test_cache.dir/clean:
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/clean
+.PHONY : CMakeFiles/test_cache.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/test_cache.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/test_bloom.dir
 
 # All Build rule for target.
 CMakeFiles/test_bloom.dir/all:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/depend
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/victor/zwd/ecc_dedup/ed/test/CMakeFiles --progress-num=1,2,3 "Built target test_bloom"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/victor/zwd/ecc_dedup/ed/test/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target test_bloom"
 .PHONY : CMakeFiles/test_bloom.dir/all
 
 # Include target in all.
@@ -76,7 +113,7 @@ all: CMakeFiles/test_bloom.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/test_bloom.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/victor/zwd/ecc_dedup/ed/test/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/victor/zwd/ecc_dedup/ed/test/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test_bloom.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/victor/zwd/ecc_dedup/ed/test/CMakeFiles 0
 .PHONY : CMakeFiles/test_bloom.dir/rule

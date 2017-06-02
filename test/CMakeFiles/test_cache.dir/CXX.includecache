@@ -100,15 +100,9 @@ unistd.h
 string.h
 -
 
-/home/victor/zwd/ecc_dedup/ed/test/test_bloom.cpp
+/home/victor/zwd/ecc_dedup/ed/test/test_cache.cpp
 iostream
 -
-stdlib.h
--
-time.h
--
-bloom_func.h
-/home/victor/zwd/ecc_dedup/ed/test/bloom_func.h
-com_t.h
-/home/victor/zwd/ecc_dedup/ed/test/com_t.h
+cache.h
+/home/victor/zwd/ecc_dedup/ed/test/cache.h
 
