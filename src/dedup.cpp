@@ -15,7 +15,7 @@
 #include "dedup.h"
 #include "bloom_func.h"
 #include "cache.h"
-#include "map.h"
+#include "mt.h"
 
 
 dedup::dedup() {
@@ -73,7 +73,7 @@ int dedup::file_reader(char *path) {
         memset(bch_result, 0, 33);
         encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
         ByteToHexStr(hv, bch_result, 16);
-
+        chunk_num++;
 ////////////////////////////////////////////////////////////////////////////////
         dedup_process(bch_result, (char *)chk_cont, 32);
 
@@ -111,6 +111,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
     bloom *blf = bloom::Get_bloom();
     std::string str;
     cache *cac = cache::Get_cache();
+    bch_result[bch_lengh] = '\0';
     str = bch_result;
     if(blf -> bloom_exist(str)){ //the str is exist in the bloom filter
         int res = cac -> cache_find(bch_result, chk_cont, bch_lengh);
@@ -118,22 +119,24 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
             return 1;
         }
         else if(res == 2){ //ecc crash
-            map *mp = map::Get_map();
-            if(mp -> insert_map(bch_result, chk_cont, bch_lengh)){
+            mt *mp = mt::Get_mt();
+            chunk_not_dup++; //count the block that not deduplicate
+            if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
                 return 1;
             }
             else{
-                std::cout<<"insert map error!"<<std::endl;
+                std::cout<<"insert mt error!"<<std::endl;
                 exit(-1);
             }
         }
         else{
-            map *mp = map::Get_map();
-            struct map::addr *head_addr;
+            mt *mp = mt::Get_mt();
+            struct addr *head_addr = NULL;
             char read_buf[READ_LENGTH+1];
             head_addr = mp -> Get_addr(bch_result, bch_lengh);
-            if(head_addr == NULL){ //ecc and its' block is not in the map table
-                if(mp -> insert_map(bch_result, chk_cont, bch_lengh)){
+            if(head_addr == NULL){ //ecc and its' block is not in the mt table
+                chunk_not_dup++; //count the block that not deduplicate
+                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
                     return 1;
                 }
             }
@@ -146,7 +149,8 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
                     }
                     head_addr = head_addr -> next;
                 }
-                if(mp -> insert_map(bch_result, chk_cont, bch_lengh)) //insert succeed
+                chunk_not_dup++; //count the block that not deduplicate
+                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
                     return 1;
                 else
                     return 0;
@@ -154,9 +158,10 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
         }
     }
     else{
-        map *mp = map::Get_map();
+        mt *mp = mt::Get_mt();
         cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
-        if(mp -> insert_map(bch_result, chk_cont, bch_lengh)) //insert succeed
+        chunk_not_dup++; //count the block that not deduplicate
+        if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
             return 1;
         else
             return 0;

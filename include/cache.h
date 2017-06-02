@@ -5,8 +5,20 @@
 #ifndef ED_CACHE_H
 #define ED_CACHE_H
 
+#include <iostream>
+#include <map>
 #define MAX_CACHE_SIZE 10000
 #define CHUNK_SIZE 4096
+
+struct cache_list{
+    std::string code;
+    struct cache_list *next;
+    struct cache_list *prev;
+};
+struct Code_chunk{
+    uint8_t chunk[4096];
+    struct Code_chunk *next; //point to the next same ecc code or hash code, but the chunk reference are different
+};
 
 class cache{
 private:
@@ -14,15 +26,7 @@ private:
     cache(cache const&);
     cache &operator = (cache const&);
     ~cache();
-    struct cache_list{
-        std::string code;
-        struct cache_list *next;
-        struct cache_list *prev;
-    };
-    struct Code_chunk{
-        uint8_t chunk[4096];
-        struct Code_chunk *next; //point to the next same ecc code or hash code, but the chunk reference are different
-    };
+
     struct cache_list *head_cache;
     struct cache_list *tail_cache;
     std::map<std::string, struct Code_chunk *> chunk_container; //save(ECC or hash code, Chunk_reference)

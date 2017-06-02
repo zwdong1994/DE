@@ -23,17 +23,14 @@ public:
     uint64_t chunk_num;
     double time_total;
     double time_aver;
-
+    uint64_t chunk_not_dup;
 
 private:
 
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
     struct bch_control *bch;
-    uint64_t chunk_not_dup;
-    struct addr{
-        unsigned long offset; //block address
-        struct addr *next;
-    };
+
+
 };
 
 

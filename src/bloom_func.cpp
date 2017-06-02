@@ -38,7 +38,7 @@ int bloom::init_bloom(unsigned long long element_count, double false_positive_pr
         std::cout<<"Invalid bloom filter parameters!"<<std::endl;
         return -1;
     }
-
+    para.compute_optimal_parameters();  //parameter computation
     bloom_filter filter(para);
     bloom_fil_instance = filter;
     return 1;
@@ -51,10 +51,10 @@ int bloom::bloom_insert(std::string add_str){
 
 bool bloom::bloom_exist(std::string com_str){
    if (bloom_fil_instance.contains(com_str)) {
-      return TRUE;
+      return 1;
    }
    else{
        bloom_insert(com_str);
-       return FALSE;
+       return 0;
    }
 }

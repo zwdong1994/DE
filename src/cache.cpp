@@ -3,8 +3,7 @@
 //
 
 #include <string.h>
-#include <iostream>
-#include <map>
+
 #include <string>
 #include "cache.h"
 #include <iomanip>
@@ -19,7 +18,7 @@ cache::~cache(){
 
 }
 
-cache* cache_instance = NULL;
+cache* cache::cache_instance = NULL;
 
 cache* cache::Get_cache(){
     static pthread_mutex_t mu = PTHREAD_MUTEX_INITIALIZER;
