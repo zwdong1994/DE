@@ -12,6 +12,7 @@ cache::cache(){
     head_cache = NULL;
     tail_cache = NULL;
     cache_size = 0;
+//    re = 0;
 }
 
 cache::~cache(){
@@ -71,6 +72,7 @@ int cache::cache_insert(char *code, char chunk_reference[], int code_length) {
             return 1;
         }
         else if( cache_size == MAX_CACHE_SIZE) {
+            chunk_container.erase(tail_cache -> code); //delete the tail member in the R-BTree
             add_member -> code = mid_code;
             add_member -> next = head_cache;
             head_cache -> prev = add_member;
@@ -80,7 +82,7 @@ int cache::cache_insert(char *code, char chunk_reference[], int code_length) {
             head_cache -> prev = tail_cache -> prev;
             delete tail_cache;
             tail_cache = head_cache -> prev;
-            chunk_container.erase(mid_code); //delete the tail member in the R-BTree
+
             return 1;
         }
         else{ //cache contained more than one member
@@ -102,6 +104,7 @@ int cache::cache_find(char *code, char *chunk_reference, int code_length) {
     std::string mid_string;
     code[code_length] = '\0';
     mid_string = code;
+
     if(chunk_container[mid_string] != NULL){ //ecc exist
         struct Code_chunk *chunk_info = NULL;
         chunk_info = chunk_container[mid_string];
@@ -119,6 +122,7 @@ int cache::cache_find(char *code, char *chunk_reference, int code_length) {
             new_code_chunk -> next = chunk_info;
             chunk_container[mid_string] = new_code_chunk;
             if(!cache_update(code, code_length)) { //update cache error
+
                 std::cout << "cache update error!" << std::endl;
                 exit(-1);
             }
@@ -137,7 +141,7 @@ int cache::cache_find(char *code, char *chunk_reference, int code_length) {
 int cache::comp_chunk(char *Chunk_reference, struct Code_chunk *chunk_info) {
     struct Code_chunk *p = chunk_info;
     while(p!=NULL){
-        if(!memcmp(Chunk_reference, p -> chunk, CHUNK_SIZE)){ //chunk exist
+        if(memcmp(Chunk_reference, p -> chunk, CHUNK_SIZE) == 0){ //chunk exist
             return 1;
         }
         p = p->next;
@@ -147,16 +151,20 @@ int cache::comp_chunk(char *Chunk_reference, struct Code_chunk *chunk_info) {
 
 int cache::cache_update(char *code, int code_length) {
     struct cache_list *mid_member = head_cache;
+    std::string mid_str;
+
+    code[code_length] = '\0';
+    mid_str = code;
+/*    std::cout<<"4444444"<<std::endl;
+    std::cout<< head_cache -> code <<std::endl;
+    std::cout<< mid_str <<std::endl;*/
     if(cache_size == 1)
         return 1;
     else if(cache_size == 2){
-        std::string mid_str;
 
-        code[code_length] = '\0';
-        mid_str = code;
-        if(mid_str.compare(head_cache -> code) == 0)
+        if(mid_str == (head_cache -> code))
             return 1;
-        else if(mid_str.compare(tail_cache -> code) == 0){
+        else if(mid_str == (tail_cache -> code)){
             tail_cache -> code = head_cache -> code;
             head_cache -> code = mid_str;
             return 1;
@@ -165,11 +173,9 @@ int cache::cache_update(char *code, int code_length) {
             return 0;
     }
     else {
-        std::string mid_str;
-        code[code_length] = '\0';
-        mid_str = code;
-        while (mid_member->next != head_cache) { //the member is not tail member
-            if(mid_str.compare(mid_member -> code) == 0){
+        while (mid_member->next != head_cache || mid_member == tail_cache) { //the member is not tail member
+            if(mid_str == (mid_member -> code)){
+
                 if(mid_member == head_cache)
                     return 1;
                 else if(mid_member == tail_cache){
@@ -191,7 +197,9 @@ int cache::cache_update(char *code, int code_length) {
             }
             else
                 mid_member = mid_member -> next;
+
         }
+
         return 0;
     }
 }
