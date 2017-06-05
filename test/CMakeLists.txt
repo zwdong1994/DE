@@ -13,7 +13,7 @@ link_directories(/lib/x86_64-linux-gnu)
 message("${CMAKE_SOURCE_DIR}")
 set(ATTACHED_FILES ../src/bloom_func.cpp ../include/bloom_func.h ../src/cache.cpp ../include/cache.h
                     ../src/com_t.cpp ../include/com_t.h ../src/mt.cpp ../include/mt.h)
-set(SOURCE_FILES test_bloom.cpp test_cache.cpp)
+set(SOURCE_FILES test_bloom.cpp test_cache.cpp test_mt.cpp)
 
 foreach(TEST_FILE ${SOURCE_FILES})
     get_filename_component(TEST_FILE_WE ${TEST_FILE} NAME_WE)

@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/victor/zwd/ecc_dedup/ed/test
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named test_bloom
+
+# Build rule for target.
+test_bloom: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_bloom
+.PHONY : test_bloom
+
+# fast build rule for target.
+test_bloom/fast:
+	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/build
+.PHONY : test_bloom/fast
+
+#=============================================================================
 # Target rules for targets named test_cache
 
 # Build rule for target.
@@ -124,17 +137,17 @@ test_cache/fast:
 .PHONY : test_cache/fast
 
 #=============================================================================
-# Target rules for targets named test_bloom
+# Target rules for targets named test_mt
 
 # Build rule for target.
-test_bloom: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_bloom
-.PHONY : test_bloom
+test_mt: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_mt
+.PHONY : test_mt
 
 # fast build rule for target.
-test_bloom/fast:
-	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/build
-.PHONY : test_bloom/fast
+test_mt/fast:
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/build
+.PHONY : test_mt/fast
 
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.o: home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
 
@@ -142,8 +155,9 @@ home/victor/zwd/ecc_dedup/ed/src/bloom_func.o: home/victor/zwd/ecc_dedup/ed/src/
 
 # target to build an object file
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
 
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.i: home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
@@ -152,8 +166,9 @@ home/victor/zwd/ecc_dedup/ed/src/bloom_func.i: home/victor/zwd/ecc_dedup/ed/src/
 
 # target to preprocess a source file
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
 
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.s: home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
@@ -162,8 +177,9 @@ home/victor/zwd/ecc_dedup/ed/src/bloom_func.s: home/victor/zwd/ecc_dedup/ed/src/
 
 # target to generate assembly for a file
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
 
 home/victor/zwd/ecc_dedup/ed/src/cache.o: home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
@@ -172,8 +188,9 @@ home/victor/zwd/ecc_dedup/ed/src/cache.o: home/victor/zwd/ecc_dedup/ed/src/cache
 
 # target to build an object file
 home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
 
 home/victor/zwd/ecc_dedup/ed/src/cache.i: home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
@@ -182,8 +199,9 @@ home/victor/zwd/ecc_dedup/ed/src/cache.i: home/victor/zwd/ecc_dedup/ed/src/cache
 
 # target to preprocess a source file
 home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
 
 home/victor/zwd/ecc_dedup/ed/src/cache.s: home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
@@ -192,8 +210,9 @@ home/victor/zwd/ecc_dedup/ed/src/cache.s: home/victor/zwd/ecc_dedup/ed/src/cache
 
 # target to generate assembly for a file
 home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
 
 home/victor/zwd/ecc_dedup/ed/src/com_t.o: home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
@@ -202,8 +221,9 @@ home/victor/zwd/ecc_dedup/ed/src/com_t.o: home/victor/zwd/ecc_dedup/ed/src/com_t
 
 # target to build an object file
 home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
 
 home/victor/zwd/ecc_dedup/ed/src/com_t.i: home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
@@ -212,8 +232,9 @@ home/victor/zwd/ecc_dedup/ed/src/com_t.i: home/victor/zwd/ecc_dedup/ed/src/com_t
 
 # target to preprocess a source file
 home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
 
 home/victor/zwd/ecc_dedup/ed/src/com_t.s: home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
@@ -222,8 +243,9 @@ home/victor/zwd/ecc_dedup/ed/src/com_t.s: home/victor/zwd/ecc_dedup/ed/src/com_t
 
 # target to generate assembly for a file
 home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
 
 home/victor/zwd/ecc_dedup/ed/src/mt.o: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
@@ -232,8 +254,9 @@ home/victor/zwd/ecc_dedup/ed/src/mt.o: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 
 # target to build an object file
 home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 
 home/victor/zwd/ecc_dedup/ed/src/mt.i: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
@@ -242,8 +265,9 @@ home/victor/zwd/ecc_dedup/ed/src/mt.i: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
 
 # target to preprocess a source file
 home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
 
 home/victor/zwd/ecc_dedup/ed/src/mt.s: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
@@ -252,8 +276,9 @@ home/victor/zwd/ecc_dedup/ed/src/mt.s: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
 
 # target to generate assembly for a file
 home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s:
-	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
 
 test_bloom.o: test_bloom.cpp.o
@@ -310,16 +335,44 @@ test_cache.cpp.s:
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/test_cache.cpp.s
 .PHONY : test_cache.cpp.s
 
+test_mt.o: test_mt.cpp.o
+
+.PHONY : test_mt.o
+
+# target to build an object file
+test_mt.cpp.o:
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/test_mt.cpp.o
+.PHONY : test_mt.cpp.o
+
+test_mt.i: test_mt.cpp.i
+
+.PHONY : test_mt.i
+
+# target to preprocess a source file
+test_mt.cpp.i:
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/test_mt.cpp.i
+.PHONY : test_mt.cpp.i
+
+test_mt.s: test_mt.cpp.s
+
+.PHONY : test_mt.s
+
+# target to generate assembly for a file
+test_mt.cpp.s:
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/test_mt.cpp.s
+.PHONY : test_mt.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... test_cache"
 	@echo "... test_bloom"
+	@echo "... test_cache"
+	@echo "... test_mt"
+	@echo "... rebuild_cache"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/bloom_func.o"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/bloom_func.i"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/bloom_func.s"
@@ -338,6 +391,9 @@ help:
 	@echo "... test_cache.o"
 	@echo "... test_cache.i"
 	@echo "... test_cache.s"
+	@echo "... test_mt.o"
+	@echo "... test_mt.i"
+	@echo "... test_mt.s"
 .PHONY : help
 
 

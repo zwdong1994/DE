@@ -111,4 +111,5 @@ int mt::read_block(struct addr *write_addr, char *chunk_reference) {
     while (EINPROGRESS == aio_error64(&aio));
     memset(chunk_reference, 0, BLOCK_SIZE + 1);
     memcpy((void *) chunk_reference, (void *) aio.aio_buf, BLOCK_SIZE);
+    return 1;
 }
