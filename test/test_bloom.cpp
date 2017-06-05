@@ -18,8 +18,8 @@ void random_string(char str[], int length){
 
 int main(){
     bloom *bl = bloom::Get_bloom();
-    char str1[1000][11];
-    char str2[1000][11];
+    char str1[1000][33];
+    char str2[1000][33];
     double stat_t = 0.0;
     double end_t = 0.0;
     double result;
@@ -29,14 +29,14 @@ int main(){
     int exist_time = 0;
     srand((unsigned)time(NULL));
     for( i = 0; i < 1000; i++){
-        random_string(str1[i], 10);
+        random_string(str1[i], 32);
     }
     for( i = 0; i < 1000; i++){
-        random_string(str2[i], 10);
+        random_string(str2[i], 32);
     }
 
 
-    std::cout.setf(std::ios::fixed); 
+    std::cout.setf(std::ios::fixed);
 /////////////////////////////////////////////////////////////////////////////
     stat_t = cp_time.get_time();
     for( i = 0; i < 1000; i++){
@@ -44,7 +44,7 @@ int main(){
         bl -> bloom_insert(str);
     }
     end_t = cp_time.get_time();
-    result = (end_t - stat_t) / 1000;
+    result = 1000 * (end_t - stat_t) / 1000;
     std::cout<<"Insert average time: "<<result<<std::endl;
 
     stat_t = cp_time.get_time();
@@ -59,7 +59,7 @@ int main(){
     }
     std::cout<<exist_time<<std::endl;
     end_t = cp_time.get_time();
-    result = (end_t - stat_t) / 1000;
+    result = 1000 * (end_t - stat_t) / 1000;
     std::cout<<"Find average time: "<<result<<std::endl;
     exist_time = 0;
 ////////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ int main(){
             std::cout<< str << " not exist!" << std::endl;
     }
     end_t = cp_time.get_time();
-    result = (end_t - stat_t) / 1000;
+    result = 1000 * (end_t - stat_t) / 1000;
     std::cout<<"Find average time: "<<result<<std::endl;
     std::cout<<exist_time<<std::endl;
     return 0;

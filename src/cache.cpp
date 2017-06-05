@@ -71,12 +71,9 @@ int cache::cache_insert(char *code, char chunk_reference[], int code_length) {
             return 1;
         }
         else if( cache_size == MAX_CACHE_SIZE) {
-
             add_member -> code = mid_code;
             add_member -> next = head_cache;
-            tail_cache -> next = add_member;
             head_cache -> prev = add_member;
-            add_member -> prev = tail_cache;
             head_cache = add_member;
 
             tail_cache -> prev -> next = head_cache;
