@@ -43,5 +43,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/test_bloom.dir/DependInfo.cmake"
   "CMakeFiles/test_cache.dir/DependInfo.cmake"
+  "CMakeFiles/test_dedup.dir/DependInfo.cmake"
   "CMakeFiles/test_mt.dir/DependInfo.cmake"
   )

@@ -137,6 +137,19 @@ test_cache/fast:
 .PHONY : test_cache/fast
 
 #=============================================================================
+# Target rules for targets named test_dedup
+
+# Build rule for target.
+test_dedup: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_dedup
+.PHONY : test_dedup
+
+# fast build rule for target.
+test_dedup/fast:
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/build
+.PHONY : test_dedup/fast
+
+#=============================================================================
 # Target rules for targets named test_mt
 
 # Build rule for target.
@@ -149,6 +162,42 @@ test_mt/fast:
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/build
 .PHONY : test_mt/fast
 
+home/victor/zwd/ecc_dedup/ed/src/bch.o: home/victor/zwd/ecc_dedup/ed/src/bch.c.o
+
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/bch.o
+
+# target to build an object file
+home/victor/zwd/ecc_dedup/ed/src/bch.c.o:
+	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/bch.c.o
+
+home/victor/zwd/ecc_dedup/ed/src/bch.i: home/victor/zwd/ecc_dedup/ed/src/bch.c.i
+
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/bch.i
+
+# target to preprocess a source file
+home/victor/zwd/ecc_dedup/ed/src/bch.c.i:
+	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.i
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.i
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.i
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.i
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/bch.c.i
+
+home/victor/zwd/ecc_dedup/ed/src/bch.s: home/victor/zwd/ecc_dedup/ed/src/bch.c.s
+
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/bch.s
+
+# target to generate assembly for a file
+home/victor/zwd/ecc_dedup/ed/src/bch.c.s:
+	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.s
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.s
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.s
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.s
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/bch.c.s
+
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.o: home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
 
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/bloom_func.o
@@ -157,6 +206,7 @@ home/victor/zwd/ecc_dedup/ed/src/bloom_func.o: home/victor/zwd/ecc_dedup/ed/src/
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o
 
@@ -168,6 +218,7 @@ home/victor/zwd/ecc_dedup/ed/src/bloom_func.i: home/victor/zwd/ecc_dedup/ed/src/
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.i
 
@@ -179,6 +230,7 @@ home/victor/zwd/ecc_dedup/ed/src/bloom_func.s: home/victor/zwd/ecc_dedup/ed/src/
 home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.s
 
@@ -190,6 +242,7 @@ home/victor/zwd/ecc_dedup/ed/src/cache.o: home/victor/zwd/ecc_dedup/ed/src/cache
 home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
 
@@ -201,6 +254,7 @@ home/victor/zwd/ecc_dedup/ed/src/cache.i: home/victor/zwd/ecc_dedup/ed/src/cache
 home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/cache.cpp.i
 
@@ -212,6 +266,7 @@ home/victor/zwd/ecc_dedup/ed/src/cache.s: home/victor/zwd/ecc_dedup/ed/src/cache
 home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/cache.cpp.s
 
@@ -223,6 +278,7 @@ home/victor/zwd/ecc_dedup/ed/src/com_t.o: home/victor/zwd/ecc_dedup/ed/src/com_t
 home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
 
@@ -234,6 +290,7 @@ home/victor/zwd/ecc_dedup/ed/src/com_t.i: home/victor/zwd/ecc_dedup/ed/src/com_t
 home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.i
 
@@ -245,8 +302,45 @@ home/victor/zwd/ecc_dedup/ed/src/com_t.s: home/victor/zwd/ecc_dedup/ed/src/com_t
 home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.s
+
+home/victor/zwd/ecc_dedup/ed/src/dedup.o: home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o
+
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/dedup.o
+
+# target to build an object file
+home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o:
+	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o
+
+home/victor/zwd/ecc_dedup/ed/src/dedup.i: home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i
+
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/dedup.i
+
+# target to preprocess a source file
+home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i:
+	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i
+
+home/victor/zwd/ecc_dedup/ed/src/dedup.s: home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s
+
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/dedup.s
+
+# target to generate assembly for a file
+home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s:
+	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s
+	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s
+.PHONY : home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s
 
 home/victor/zwd/ecc_dedup/ed/src/mt.o: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 
@@ -256,6 +350,7 @@ home/victor/zwd/ecc_dedup/ed/src/mt.o: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 
@@ -267,6 +362,7 @@ home/victor/zwd/ecc_dedup/ed/src/mt.i: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
 home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/mt.cpp.i
 
@@ -278,6 +374,7 @@ home/victor/zwd/ecc_dedup/ed/src/mt.s: home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
 home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s:
 	$(MAKE) -f CMakeFiles/test_bloom.dir/build.make CMakeFiles/test_bloom.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
 	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
 .PHONY : home/victor/zwd/ecc_dedup/ed/src/mt.cpp.s
 
@@ -335,6 +432,33 @@ test_cache.cpp.s:
 	$(MAKE) -f CMakeFiles/test_cache.dir/build.make CMakeFiles/test_cache.dir/test_cache.cpp.s
 .PHONY : test_cache.cpp.s
 
+test_dedup.o: test_dedup.cpp.o
+
+.PHONY : test_dedup.o
+
+# target to build an object file
+test_dedup.cpp.o:
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/test_dedup.cpp.o
+.PHONY : test_dedup.cpp.o
+
+test_dedup.i: test_dedup.cpp.i
+
+.PHONY : test_dedup.i
+
+# target to preprocess a source file
+test_dedup.cpp.i:
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/test_dedup.cpp.i
+.PHONY : test_dedup.cpp.i
+
+test_dedup.s: test_dedup.cpp.s
+
+.PHONY : test_dedup.s
+
+# target to generate assembly for a file
+test_dedup.cpp.s:
+	$(MAKE) -f CMakeFiles/test_dedup.dir/build.make CMakeFiles/test_dedup.dir/test_dedup.cpp.s
+.PHONY : test_dedup.cpp.s
+
 test_mt.o: test_mt.cpp.o
 
 .PHONY : test_mt.o
@@ -369,10 +493,14 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... rebuild_cache"
 	@echo "... test_bloom"
 	@echo "... test_cache"
+	@echo "... test_dedup"
 	@echo "... test_mt"
-	@echo "... rebuild_cache"
+	@echo "... home/victor/zwd/ecc_dedup/ed/src/bch.o"
+	@echo "... home/victor/zwd/ecc_dedup/ed/src/bch.i"
+	@echo "... home/victor/zwd/ecc_dedup/ed/src/bch.s"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/bloom_func.o"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/bloom_func.i"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/bloom_func.s"
@@ -382,6 +510,9 @@ help:
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/com_t.o"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/com_t.i"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/com_t.s"
+	@echo "... home/victor/zwd/ecc_dedup/ed/src/dedup.o"
+	@echo "... home/victor/zwd/ecc_dedup/ed/src/dedup.i"
+	@echo "... home/victor/zwd/ecc_dedup/ed/src/dedup.s"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/mt.o"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/mt.i"
 	@echo "... home/victor/zwd/ecc_dedup/ed/src/mt.s"
@@ -391,6 +522,9 @@ help:
 	@echo "... test_cache.o"
 	@echo "... test_cache.i"
 	@echo "... test_cache.s"
+	@echo "... test_dedup.o"
+	@echo "... test_dedup.i"
+	@echo "... test_dedup.s"
 	@echo "... test_mt.o"
 	@echo "... test_mt.i"
 	@echo "... test_mt.s"

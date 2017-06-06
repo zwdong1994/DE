@@ -177,13 +177,63 @@ CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o.provides: CMake
 CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o.provides.build: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
 
 
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o: CMakeFiles/test_mt.dir/flags.make
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o: /home/victor/zwd/ecc_dedup/ed/src/dedup.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/victor/zwd/ecc_dedup/ed/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o -c /home/victor/zwd/ecc_dedup/ed/src/dedup.cpp
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/victor/zwd/ecc_dedup/ed/src/dedup.cpp > CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.i
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/victor/zwd/ecc_dedup/ed/src/dedup.cpp -o CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.s
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o.requires:
+
+.PHONY : CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o.requires
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o.provides: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o.provides.build
+.PHONY : CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o.provides
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o.provides.build: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o
+
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o: CMakeFiles/test_mt.dir/flags.make
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o: /home/victor/zwd/ecc_dedup/ed/src/bch.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/victor/zwd/ecc_dedup/ed/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o"
+	g++  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o   -c /home/victor/zwd/ecc_dedup/ed/src/bch.c
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.i"
+	g++  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/victor/zwd/ecc_dedup/ed/src/bch.c > CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.i
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.s"
+	g++  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/victor/zwd/ecc_dedup/ed/src/bch.c -o CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.s
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o.requires:
+
+.PHONY : CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o.requires
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o.provides: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o.requires
+	$(MAKE) -f CMakeFiles/test_mt.dir/build.make CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o.provides.build
+.PHONY : CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o.provides
+
+CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o.provides.build: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o
+
+
 # Object files for target test_mt
 test_mt_OBJECTS = \
 "CMakeFiles/test_mt.dir/test_mt.cpp.o" \
 "CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.o" \
 "CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o" \
 "CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o" \
-"CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o"
+"CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o" \
+"CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o" \
+"CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o"
 
 # External object files for target test_mt
 test_mt_EXTERNAL_OBJECTS =
@@ -193,11 +243,13 @@ test_mt: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bloom_func.cpp.
 test_mt: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o
 test_mt: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o
 test_mt: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o
+test_mt: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o
+test_mt: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o
 test_mt: CMakeFiles/test_mt.dir/build.make
 test_mt: /usr/lib/x86_64-linux-gnu/librt.so
 test_mt: /usr/lib/x86_64-linux-gnu/libcrypto.a
 test_mt: CMakeFiles/test_mt.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/victor/zwd/ecc_dedup/ed/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable test_mt"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/victor/zwd/ecc_dedup/ed/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable test_mt"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/test_mt.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -210,6 +262,8 @@ CMakeFiles/test_mt.dir/requires: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedu
 CMakeFiles/test_mt.dir/requires: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/cache.cpp.o.requires
 CMakeFiles/test_mt.dir/requires: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/com_t.cpp.o.requires
 CMakeFiles/test_mt.dir/requires: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/mt.cpp.o.requires
+CMakeFiles/test_mt.dir/requires: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/dedup.cpp.o.requires
+CMakeFiles/test_mt.dir/requires: CMakeFiles/test_mt.dir/home/victor/zwd/ecc_dedup/ed/src/bch.c.o.requires
 
 .PHONY : CMakeFiles/test_mt.dir/requires
 

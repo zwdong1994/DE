@@ -40,9 +40,10 @@ void dedup::travel_dir(char *path) {
     struct dirent *ent;
     char child_path[512];
     pdir = opendir(path);
-    memset(child_path, 0, 512);
+
 
     while((ent = readdir(pdir)) != NULL){
+        memset(child_path, 0, 512);
         if(ent->d_type & DT_DIR){ //if the ent is dir
             if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
                 continue;
@@ -50,6 +51,8 @@ void dedup::travel_dir(char *path) {
             travel_dir(child_path);
         }
         else{
+            sprintf(child_path,"%s/%s",path,ent->d_name);
+//            std::cout<<child_path <<std::endl;
             file_reader(child_path);
         }
     }
