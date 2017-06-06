@@ -41,6 +41,7 @@ int main(){
     }
 /////////////////////////////////////////////////////////////////////////////
 ///                    test insert and get functions                      ///
+///                 and test the read and write functions                 ///
 /////////////////////////////////////////////////////////////////////////////
     for(i = 0; i < 100; i++){
         mt_index -> insert_mt(ecc_code[i], block[i], 32);
