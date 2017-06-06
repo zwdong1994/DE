@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#define BLOCK_SIZE 4096
+
 
 mt::mt() {
     ssd_capacity = 64;

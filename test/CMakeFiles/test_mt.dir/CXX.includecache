@@ -105,6 +105,8 @@ iostream
 -
 stdlib.h
 -
+string.h
+-
 time.h
 -
 mt.h
