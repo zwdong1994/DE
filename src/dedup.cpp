@@ -59,10 +59,12 @@ void dedup::travel_dir(char *path) {
 }
 
 int dedup::file_reader(char *path) {
-    uint8_t hv[17];
-    char bch_result[33];
+    uint8_t hv[CODE_LENGTH + 1];
+    char bch_result[2 * CODE_LENGTH + 1];
     FILE *fp = NULL;
     uint8_t chk_cont[4097];
+    int bloom_flag = 0;
+    int cache_flag = 0;
 
     if((fp = fopen(path, "r")) == NULL){
         std::cout<<"Open file error!The file name is: "<<path<<std::endl;
@@ -72,16 +74,18 @@ int dedup::file_reader(char *path) {
         memset(chk_cont, 0, READ_LENGTH);
         if(fread(chk_cont, sizeof(char), READ_LENGTH, fp) == 0)
             break;
-        memset(hv, 0, 17);
-        memset(bch_result, 0, 33);
+        memset(hv, 0, CODE_LENGTH + 1);
+        memset(bch_result, 0, 2 * CODE_LENGTH + 1);
         encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
-        ByteToHexStr(hv, bch_result, 16);
+        ByteToHexStr(hv, bch_result, CODE_LENGTH);
         chunk_num++;
 ////////////////////////////////////////////////////////////////////////////////
-        dedup_process(bch_result, (char *)chk_cont, 32);
+        bloom_flag = (bch_result, 2 * CODE_LENGTH);
+        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
 
 
     }
+    fclose(fp);
     return 0;
 }
 
@@ -170,4 +174,33 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
             return 0;
     }
     return 0;
+}
+
+int dedup::dedup_bloom(char *bch_result, int bch_length) {
+    bloom *blf = bloom::Get_bloom();
+    std::string str;
+    bch_result[bch_length] = '\0';
+    str = bch_result;
+    if(blf -> bloom_exist(str)) { //the str is exist in the bloom filter
+        return 1;
+    }
+    else
+        return 0;
+
+}
+
+int dedup::dedup_cache(char *bch_result, char *chk_cont, int bch_length) {
+    cache *cac = cache::Get_cache();
+    int res = cac -> cache_find(bch_result, chk_cont, bch_length);
+    if(res == 1){
+        return 1;
+    }
+    else if(res == 2){ //ecc crash
+        return 2;
+    }
+    else{
+        return 3; //cache missed
+    }
+
+    
 }

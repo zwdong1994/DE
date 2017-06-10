@@ -11,6 +11,7 @@
 #define READ_LENGTH 4096
 #define CONFIG_M 8
 #define CONFIG_T 13
+#define CODE_LENGTH 16
 class dedup{
 public:
     dedup();
@@ -29,6 +30,8 @@ private:
 
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
     struct bch_control *bch;
+    int dedup_bloom(char bch_result[], int bch_length);
+    int dedup_cache(char bch_result[], char *chk_cont, int bch_length);
 
 
 };
