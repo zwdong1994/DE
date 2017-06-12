@@ -195,12 +195,64 @@ int dedup::dedup_cache(char *bch_result, char *chk_cont, int bch_length) {
     if(res == 1){
         return 1;
     }
-    else if(res == 2){ //ecc crash
-        return 2;
+    else if(res == 2){
+        return 2;  //ecc crash
     }
     else{
         return 3; //cache missed
     }
+}
 
-    
+int dedup::dedup_mt(char bch_result[], char *chk_cont, int bch_length, int cache_flag, int bloom_flag){
+    if(bloom_flag == 1) { //bloom hit
+        if (cache_flag == 1) { //cache hit
+            return 1;
+        }
+        else if (cache_flag == 2) {//cache crash
+            mt *mp = mt::Get_mt();
+            if (mp->insert_mt(bch_result, chk_cont, bch_lengh)) {
+                return 1;
+            }
+            else {
+                std::cout << "insert mt error!" << std::endl;
+                exit(-1);
+            }
+        }
+        else {//cache missed
+            mt *mp = mt::Get_mt();
+            struct addr *head_addr = NULL;
+            char read_buf[READ_LENGTH+1];
+            head_addr = mp -> Get_addr(bch_result, bch_lengh);
+            if(head_addr == NULL){ //ecc and its' block is not in the mt table
+                chunk_not_dup++; //count the block that not deduplicate
+                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
+                    return 1;
+                }
+            }
+            else{ //ecc exist, so we need read the block from ssd
+                while(head_addr != NULL){
+                    memset(read_buf, 0, READ_LENGTH+1);
+                    mp->read_block(head_addr, read_buf);
+                    if(memcmp(read_buf, chk_cont, READ_LENGTH) == 0){ //chunk exist
+                        return 1;
+                    }
+                    head_addr = head_addr -> next;
+                }
+                chunk_not_dup++; //count the block that not deduplicate
+                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
+                    return 1;
+                else
+                    return 0;
+            }
+        }
+    }
+    else{ //bloom missed
+        mt *mp = mt::Get_mt();
+        cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
+        chunk_not_dup++; //count the block that not deduplicate
+        if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
+            return 1;
+        else
+            return 0;
+    }
 }

@@ -32,7 +32,7 @@ private:
     struct bch_control *bch;
     int dedup_bloom(char bch_result[], int bch_length);
     int dedup_cache(char bch_result[], char *chk_cont, int bch_length);
-
+    int dedup_mt(char bch_result[], char *chk_cont, int bch_length, int cache_flag);
 
 };
 
