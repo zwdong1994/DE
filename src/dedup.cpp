@@ -65,6 +65,7 @@ int dedup::file_reader(char *path) {
     uint8_t chk_cont[4097];
     int bloom_flag = 0;
     int cache_flag = 0;
+    int mt_flag = 0;
 
     if((fp = fopen(path, "r")) == NULL){
         std::cout<<"Open file error!The file name is: "<<path<<std::endl;
@@ -80,8 +81,10 @@ int dedup::file_reader(char *path) {
         ByteToHexStr(hv, bch_result, CODE_LENGTH);
         chunk_num++;
 ////////////////////////////////////////////////////////////////////////////////
-        bloom_flag = (bch_result, 2 * CODE_LENGTH);
-        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
+        bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
+        cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
+        mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag,bloom_flag);
+//        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
 
 
     }
@@ -189,22 +192,27 @@ int dedup::dedup_bloom(char *bch_result, int bch_length) {
 
 }
 
-int dedup::dedup_cache(char *bch_result, char *chk_cont, int bch_length) {
+int dedup::dedup_cache(char *bch_result, char *chk_cont, int bch_length, int bloom_flag) {
     cache *cac = cache::Get_cache();
-    int res = cac -> cache_find(bch_result, chk_cont, bch_length);
-    if(res == 1){
-        return 1;
+
+    if(bloom_flag == 1) {
+        int res = cac -> cache_find(bch_result, chk_cont, bch_length);
+        if (res == 1) {
+            return 1;
+        } else if (res == 2) {
+            return 2;  //ecc crash
+        } else {
+            return 3; //cache missed
+        }
     }
-    else if(res == 2){
-        return 2;  //ecc crash
-    }
-    else{
-        return 3; //cache missed
+    else{//it is also means that the block is not in the mapping table.
+        cac -> cache_insert(bch_result, chk_cont, bch_length); //insert the block into the cache
+        return 4; //bloom missed
     }
 }
 
-int dedup::dedup_mt(char bch_result[], char *chk_cont, int bch_length, int cache_flag, int bloom_flag){
-    if(bloom_flag == 1) { //bloom hit
+int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag){
+    if(bloom_flag == 1 && cache_flag != 4) { //bloom hit
         if (cache_flag == 1) { //cache hit
             return 1;
         }
@@ -241,18 +249,22 @@ int dedup::dedup_mt(char bch_result[], char *chk_cont, int bch_length, int cache
                 chunk_not_dup++; //count the block that not deduplicate
                 if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
                     return 1;
-                else
-                    return 0;
+                else{
+                    std::cout << "insert mt error!" << std::endl;
+                    exit(-1);
+                }
             }
         }
     }
     else{ //bloom missed
         mt *mp = mt::Get_mt();
-        cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
+        //cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
         chunk_not_dup++; //count the block that not deduplicate
         if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
             return 1;
-        else
-            return 0;
+        else{
+            std::cout << "insert mt error!" << std::endl;
+            exit(-1);
+        }
     }
 }

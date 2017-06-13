@@ -31,8 +31,8 @@ private:
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
     struct bch_control *bch;
     int dedup_bloom(char bch_result[], int bch_length);
-    int dedup_cache(char bch_result[], char *chk_cont, int bch_length);
-    int dedup_mt(char bch_result[], char *chk_cont, int bch_length, int cache_flag);
+    int dedup_cache(char bch_result[], char *chk_cont, int bch_length, int bloom_flag);
+    int dedup_mt(char bch_result[], char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag);
 
 };
 
