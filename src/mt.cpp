@@ -4,18 +4,25 @@
 
 #include "mt.h"
 
-#include <aio.h>
+
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
 
+#include "com_t.h"
 
 
 mt::mt() {
-    ssd_capacity = 64;
+    bzero((char *)&myaio, sizeof(struct aiocb64));
+    myaio.aio_buf = malloc(4097);
+    if(!myaio.aio_buf)
+        perror("malloc\n");
+    write_time = 0;
+    time_total = 0.0;
+    ssd_capacity = 100;
     max_size_addr = ssd_capacity * 1024 * 1024 / 4;
-    alloc_addr_point = 0;
+    alloc_addr_point = 1;
     dev_name = new char[30];
     strcpy(dev_name, "/dev/sdc1");
     fd = open(dev_name, O_RDWR|O_LARGEFILE);
@@ -26,7 +33,8 @@ mt::mt() {
 }
 
 mt::~mt() {
-
+//    std::cout<< "write average time is: " << time_total / write_time << std::endl;
+    close(fd);
 }
 
 mt* mt::mt_instance = NULL;
@@ -82,27 +90,48 @@ int mt::insert_mt(char *ecc_code, char chunk_reference[], int length_ecc) {
 }
 
 int mt::write_block(struct addr *write_addr, char *chunk_reference) {
-    struct aiocb64 aio;
-    bzero((char *)&aio, sizeof(struct aiocb64));
-    aio.aio_buf = malloc(4097);
-    if(!aio.aio_buf)
-        perror("malloc\n");
-    aio.aio_fildes = fd;
-    aio.aio_nbytes = BLOCK_SIZE;
-    aio.aio_offset = write_addr->offset * BLOCK_SIZE;
-    memcpy((void *)aio.aio_buf, (void *)chunk_reference, BLOCK_SIZE);
-    aio_write64(&aio);
-    while(EINPROGRESS == aio_error64(&aio));
 
+//    double stat_t = 0.0, end_t = 0.0;
+//    std::cout << "11" << std::endl;
+    cp_t ti;
+    struct aiocb64 *aio = NULL;
+    aio = new aiocb64;
+//    std::cout << "11" << std::endl;
+//    struct aiocb64 *cblist[1];
+    bzero((char *)aio, sizeof(struct aiocb64));
+//    bzero( (char *)cblist, sizeof(cblist) );
+    aio->aio_buf = myaio.aio_buf;
+
+    aio->aio_fildes = fd;
+    aio->aio_nbytes = BLOCK_SIZE;
+    aio->aio_offset = write_addr->offset * BLOCK_SIZE;
+    memcpy((void *)aio->aio_buf, (void *)chunk_reference, BLOCK_SIZE);
+//    stat_t = ti.get_time();
+//    cblist[0] = &aio;
+//    std::cout << "11" << std::endl;
+    aio_write64(aio);
+//    aio_suspend64(cblist, 1, NULL);
+    while(EINPROGRESS == aio_error64(aio));
+//    std::cout << "11" << std::endl;
+//    end_t = ti.get_time();
+
+//    std::cout<< "write average time is: " << (end_t - stat_t) * 1000 << std::endl;
+//    time_total += ((end_t - stat_t) * 1000);
+//    write_time++;
+//    free((void *)aio.aio_buf);
+    delete aio;
+//    std::cout << "11" << std::endl;
     return 1;
 }
 
 int mt::read_block(struct addr *write_addr, char *chunk_reference) {
+
     struct aiocb64 aio;
-    bzero((char *) &aio, sizeof(struct aiocb64));
-    aio.aio_buf = malloc(BLOCK_SIZE + 1);
-    if (!aio.aio_buf)
-        perror("malloc\n");
+//    struct aiocb64 *cblist[1];
+    bzero((char *)&aio, sizeof(struct aiocb64));
+//    bzero( (char *)cblist, sizeof(cblist) );
+    aio.aio_buf = myaio.aio_buf;
+
     aio.aio_fildes = fd;
     aio.aio_nbytes = BLOCK_SIZE;
     aio.aio_offset = write_addr->offset * BLOCK_SIZE;
@@ -111,5 +140,6 @@ int mt::read_block(struct addr *write_addr, char *chunk_reference) {
     while (EINPROGRESS == aio_error64(&aio));
     memset(chunk_reference, 0, BLOCK_SIZE + 1);
     memcpy((void *) chunk_reference, (void *) aio.aio_buf, BLOCK_SIZE);
+//    free((void *)aio.aio_buf);
     return 1;
 }

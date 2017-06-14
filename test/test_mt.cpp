@@ -6,6 +6,7 @@
 #include <string.h>
 #include <time.h>
 #include "mt.h"
+#include "com_t.h"
 
 void random_string(char str[], int length){
     int i;
@@ -16,6 +17,8 @@ void random_string(char str[], int length){
 }
 
 int main(){
+    cp_t ti;
+    double stat_t = 0.0, end_t = 0.0;
     char *block[1000];
     char *ecc_code[1000];
     char *ecc_crash[100];
@@ -43,9 +46,17 @@ int main(){
 ///                    test insert and get functions                      ///
 ///                 and test the read and write functions                 ///
 /////////////////////////////////////////////////////////////////////////////
+
     for(i = 0; i < 100; i++){
-        mt_index -> insert_mt(ecc_code[i], block[i], 32);
+        stat_t = ti.get_time();
+        if( !mt_index -> insert_mt(ecc_code[i], block[i], 32)){
+            std::cout << "insert error" << std::endl;
+            return 0;
+        }
+        end_t = ti.get_time();
+        ti.cp_all((end_t - stat_t) * 1000);
     }
+    ti.cp_aver("test mt");
     for(i = 0; i < 100; i++){
         if((head_addr = mt_index -> Get_addr(ecc_code[i], 32)) == NULL){
             not_exist++;

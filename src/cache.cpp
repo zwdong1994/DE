@@ -72,6 +72,7 @@ int cache::cache_insert(char *code, char chunk_reference[], int code_length) {
             return 1;
         }
         else if( cache_size == MAX_CACHE_SIZE) {
+            delete chunk_container[tail_cache->code];
             chunk_container.erase(tail_cache -> code); //delete the tail member in the R-BTree
             add_member -> code = mid_code;
             add_member -> next = head_cache;

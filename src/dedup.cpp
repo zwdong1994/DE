@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <iomanip>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -16,6 +17,7 @@
 #include "bloom_func.h"
 #include "cache.h"
 #include "mt.h"
+#include "com_t.h"
 
 
 dedup::dedup() {
@@ -24,14 +26,39 @@ dedup::dedup() {
     time_aver = 0.0;
     chunk_not_dup = 0;
 
+
     bch = init_bch(CONFIG_M, CONFIG_T, 0);
+
+    std::cout<<"************************************************************************************"
+             <<"test start!"
+             <<"************************************************************************************"<<std::endl;
+    std::cout<<std::left<<std::setw(100)<<"Filename"
+             <<std::left<<std::setw(30)<<"Total time(ms)"
+             <<std::left<<std::setw(30)<<"Chunk number"
+             <<std::left<<std::setw(30)<<"Average time(ms)"<<std::endl;
 }
 
 dedup::~dedup() {
+    if(time_total > 0) {
+        time_aver = time_total / chunk_num;
+        std::cout <<std::endl<< "**************************"<<"This option's time performance***********************"<<std::endl;
+//        mt *mp = mt::Get_mt();
+//        std::cout<< "write average time is: " << mp->time_total / mp->write_time << std::endl;
+        std::cout << "The total time is " << time_total <<"ms"<< std::endl;
+        std::cout << "The chunk number is " << chunk_num << std::endl;
+        if(chunk_not_dup > 0){
+            std::cout << "The dedupe rate is " <<  (chunk_num - chunk_not_dup) * 100.0 / chunk_num <<"%"<<std::endl;
+            std::cout << "The not dedupe chunk number is " << chunk_not_dup << std::endl;
+        }
 
+        std::cout << "The average time is " << time_aver <<"ms"<< std::endl<<std::endl;
+    }
 }
 
 int dedup::dedup_func(char *path) {
+    travel_dir(path);
+
+//    std::cout<<"1"<<std::endl;
     return 0;
 }
 
@@ -40,8 +67,12 @@ void dedup::travel_dir(char *path) {
     struct dirent *ent;
     char child_path[512];
     pdir = opendir(path);
+    if(pdir == NULL){
+        std::cout<<"Open dir error!"<<std::endl;
+        exit(-1);
+    }
 
-
+//    std::cout<<"1"<<std::endl;
     while((ent = readdir(pdir)) != NULL){
         memset(child_path, 0, 512);
         if(ent->d_type & DT_DIR){ //if the ent is dir
@@ -66,6 +97,9 @@ int dedup::file_reader(char *path) {
     int bloom_flag = 0;
     int cache_flag = 0;
     int mt_flag = 0;
+    double stat_t = 0.0;
+    double end_t = 0.0;
+    cp_t ti;
 
     if((fp = fopen(path, "r")) == NULL){
         std::cout<<"Open file error!The file name is: "<<path<<std::endl;
@@ -81,13 +115,22 @@ int dedup::file_reader(char *path) {
         ByteToHexStr(hv, bch_result, CODE_LENGTH);
         chunk_num++;
 ////////////////////////////////////////////////////////////////////////////////
+
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
+        stat_t = ti.get_time();
         cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
-        mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag,bloom_flag);
+        mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
+        end_t = ti.get_time();
+        if(mt_flag == 2)
+            chunk_not_dup++;
+
+        ti.cp_all((end_t - stat_t) * 1000);
 //        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
 
 
     }
+    ti.cp_aver(path);
+    time_total += ti.time_total;
     fclose(fp);
     return 0;
 }
@@ -130,7 +173,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
         }
         else if(res == 2){ //ecc crash
             mt *mp = mt::Get_mt();
-            chunk_not_dup++; //count the block that not deduplicate
+//            chunk_not_dup++; //count the block that not deduplicate
             if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
                 return 1;
             }
@@ -145,7 +188,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
             char read_buf[READ_LENGTH+1];
             head_addr = mp -> Get_addr(bch_result, bch_lengh);
             if(head_addr == NULL){ //ecc and its' block is not in the mt table
-                chunk_not_dup++; //count the block that not deduplicate
+//                chunk_not_dup++; //count the block that not deduplicate
                 if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
                     return 1;
                 }
@@ -153,13 +196,14 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
             else{ //ecc exist, so we need read the block from ssd
                 while(head_addr != NULL){
                     memset(read_buf, 0, READ_LENGTH+1);
+                    std::cout << "1" << std::endl;
                     mp->read_block(head_addr, read_buf);
                     if(memcmp(read_buf, chk_cont, READ_LENGTH) == 0){ //chunk exist
                         return 1;
                     }
                     head_addr = head_addr -> next;
                 }
-                chunk_not_dup++; //count the block that not deduplicate
+//                chunk_not_dup++; //count the block that not deduplicate
                 if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
                     return 1;
                 else
@@ -170,7 +214,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
     else{
         mt *mp = mt::Get_mt();
         cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
-        chunk_not_dup++; //count the block that not deduplicate
+//        chunk_not_dup++; //count the block that not deduplicate
         if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
             return 1;
         else
@@ -219,7 +263,7 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
         else if (cache_flag == 2) {//cache crash
             mt *mp = mt::Get_mt();
             if (mp->insert_mt(bch_result, chk_cont, bch_lengh)) {
-                return 1;
+                return 2;
             }
             else {
                 std::cout << "insert mt error!" << std::endl;
@@ -232,9 +276,9 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
             char read_buf[READ_LENGTH+1];
             head_addr = mp -> Get_addr(bch_result, bch_lengh);
             if(head_addr == NULL){ //ecc and its' block is not in the mt table
-                chunk_not_dup++; //count the block that not deduplicate
+//                chunk_not_dup++; //count the block that not deduplicate
                 if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
-                    return 1;
+                    return 2;
                 }
             }
             else{ //ecc exist, so we need read the block from ssd
@@ -246,9 +290,9 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
                     }
                     head_addr = head_addr -> next;
                 }
-                chunk_not_dup++; //count the block that not deduplicate
+//                chunk_not_dup++; //count the block that not deduplicate
                 if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
-                    return 1;
+                    return 2;
                 else{
                     std::cout << "insert mt error!" << std::endl;
                     exit(-1);
@@ -259,9 +303,9 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
     else{ //bloom missed
         mt *mp = mt::Get_mt();
         //cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
-        chunk_not_dup++; //count the block that not deduplicate
+//        chunk_not_dup++; //count the block that not deduplicate
         if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
-            return 1;
+            return 2;
         else{
             std::cout << "insert mt error!" << std::endl;
             exit(-1);

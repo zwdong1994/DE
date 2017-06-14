@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <iostream>
 #include <map>
+#include <aio.h>
 
 #define BLOCK_SIZE 4096
 struct addr{
@@ -22,7 +23,8 @@ public:
     int insert_mt(char ecc_code[], char chunk_reference[], int length_ecc); //insert a new ecc-addr pair to the mt list and in the mean time write the block
     int write_block(struct addr *write_addr, char chunk_reference[]);
     int read_block(struct addr *write_addr, char chunk_reference[]);
-
+    double time_total;
+    uint64_t write_time;
 
 
 private:
@@ -30,6 +32,8 @@ private:
     mt(mt const&);
     mt &operator = (mt const&);
     ~mt();
+
+    struct aiocb64 myaio;
 
     unsigned int ssd_capacity;
     unsigned long max_size_addr; //the maximum block address

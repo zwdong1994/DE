@@ -15,15 +15,21 @@ void random_string(char str[], int length){
     str[length] = '\0';
 }
 
-int main(){
-    char path[256] = "/mnt/cdrom/vmdk";
+int main(int argc, char **argv){
+    char path[256];
     dedup ded;
+    strcpy(path, argv[1]);
 
 
 
 /////////////////////////////////////////////////////////////////////////////
 ///                              test travel                              ///
 /////////////////////////////////////////////////////////////////////////////
-    ded.travel_dir(path);
+//    ded.travel_dir(path);
+
+/////////////////////////////////////////////////////////////////////////////
+///                              test dedup                               ///
+/////////////////////////////////////////////////////////////////////////////
+    ded.dedup_func(path);
     return 0;
 }
