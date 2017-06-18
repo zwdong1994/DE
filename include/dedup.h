@@ -6,7 +6,10 @@
 #define ED_DEDUP_H
 
 #include <stdint.h>
+#include "mt.h"
 #include "bch.h"
+#include "bloom_func.h"
+#include "cache.h"
 
 #define READ_LENGTH 4096
 #define CONFIG_M 8
@@ -33,7 +36,9 @@ private:
     int dedup_bloom(char bch_result[], int bch_length);
     int dedup_cache(char bch_result[], char *chk_cont, int bch_length, int bloom_flag);
     int dedup_mt(char bch_result[], char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag);
-
+    mt *mp;
+    cache *cac;
+    bloom *blf;
 };
 
 

@@ -13,6 +13,10 @@
 #include "com_t.h"
 
 
+static char *dev_name;
+static int mt_fd;
+static struct aiocb64 myaio;
+
 mt::mt() {
     bzero((char *)&myaio, sizeof(struct aiocb64));
     myaio.aio_buf = malloc(4097);
@@ -25,8 +29,8 @@ mt::mt() {
     alloc_addr_point = 1;
     dev_name = new char[30];
     strcpy(dev_name, "/dev/sdc1");
-    fd = open(dev_name, O_RDWR|O_LARGEFILE);
-    if(fd == -1){
+    mt_fd = open(dev_name, O_RDWR|O_LARGEFILE);
+    if(mt_fd == -1){
         std::cout<<"open "<< dev_name <<" error!"<<std::endl;
         exit(-1);
     }
@@ -34,7 +38,7 @@ mt::mt() {
 
 mt::~mt() {
 //    std::cout<< "write average time is: " << time_total / write_time << std::endl;
-    close(fd);
+    close(mt_fd);
 }
 
 mt* mt::mt_instance = NULL;
@@ -76,12 +80,12 @@ int mt::insert_mt(char *ecc_code, char chunk_reference[], int length_ecc) {
         if(mt_container[str] != NULL){
             p -> next = (struct addr*)mt_container[str];
             mt_container[str] = p;
-            write_block(p, chunk_reference);
+//            write_block(p, chunk_reference);
             return 1;
         }
         else{
             mt_container[str] = p;
-            write_block(p, chunk_reference);
+//            write_block(p, chunk_reference);
             return 1;
         }
 
@@ -89,7 +93,7 @@ int mt::insert_mt(char *ecc_code, char chunk_reference[], int length_ecc) {
     return 0;
 }
 
-int mt::write_block(struct addr *write_addr, char *chunk_reference) {
+int write_block(unsigned long offset, char *chunk_reference) {
 
 //    double stat_t = 0.0, end_t = 0.0;
 //    std::cout << "11" << std::endl;
@@ -102,9 +106,9 @@ int mt::write_block(struct addr *write_addr, char *chunk_reference) {
 //    bzero( (char *)cblist, sizeof(cblist) );
     aio->aio_buf = myaio.aio_buf;
 
-    aio->aio_fildes = fd;
+    aio->aio_fildes = mt_fd;
     aio->aio_nbytes = BLOCK_SIZE;
-    aio->aio_offset = write_addr->offset * BLOCK_SIZE;
+    aio->aio_offset = offset * BLOCK_SIZE;
     memcpy((void *)aio->aio_buf, (void *)chunk_reference, BLOCK_SIZE);
 //    stat_t = ti.get_time();
 //    cblist[0] = &aio;
@@ -124,7 +128,7 @@ int mt::write_block(struct addr *write_addr, char *chunk_reference) {
     return 1;
 }
 
-int mt::read_block(struct addr *write_addr, char *chunk_reference) {
+int read_block(struct addr *write_addr, char *chunk_reference) {
 
     struct aiocb64 aio;
 //    struct aiocb64 *cblist[1];
@@ -132,7 +136,7 @@ int mt::read_block(struct addr *write_addr, char *chunk_reference) {
 //    bzero( (char *)cblist, sizeof(cblist) );
     aio.aio_buf = myaio.aio_buf;
 
-    aio.aio_fildes = fd;
+    aio.aio_fildes = mt_fd;
     aio.aio_nbytes = BLOCK_SIZE;
     aio.aio_offset = write_addr->offset * BLOCK_SIZE;
 

@@ -12,11 +12,11 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <iostream>
-
+#include <openssl/sha.h>
+#include <openssl/md5.h>
 #include "dedup.h"
-#include "bloom_func.h"
-#include "cache.h"
-#include "mt.h"
+
+
 #include "com_t.h"
 
 
@@ -26,6 +26,9 @@ dedup::dedup() {
     time_aver = 0.0;
     chunk_not_dup = 0;
 
+    mp = mt::Get_mt();
+    cac = cache::Get_cache();
+    blf = bloom::Get_bloom();
 
     bch = init_bch(CONFIG_M, CONFIG_T, 0);
 
@@ -121,8 +124,11 @@ int dedup::file_reader(char *path) {
         cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
         mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
         end_t = ti.get_time();
-        if(mt_flag == 2)
+        if(mt_flag == 2){
             chunk_not_dup++;
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+        }
+
 
         ti.cp_all((end_t - stat_t) * 1000);
 //        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
@@ -172,7 +178,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
             return 1;
         }
         else if(res == 2){ //ecc crash
-            mt *mp = mt::Get_mt();
+
 //            chunk_not_dup++; //count the block that not deduplicate
             if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
                 return 1;
@@ -183,7 +189,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
             }
         }
         else{
-            mt *mp = mt::Get_mt();
+
             struct addr *head_addr = NULL;
             char read_buf[READ_LENGTH+1];
             head_addr = mp -> Get_addr(bch_result, bch_lengh);
@@ -197,7 +203,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
                 while(head_addr != NULL){
                     memset(read_buf, 0, READ_LENGTH+1);
                     std::cout << "1" << std::endl;
-                    mp->read_block(head_addr, read_buf);
+                    read_block(head_addr, read_buf);
                     if(memcmp(read_buf, chk_cont, READ_LENGTH) == 0){ //chunk exist
                         return 1;
                     }
@@ -212,7 +218,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
         }
     }
     else{
-        mt *mp = mt::Get_mt();
+
         cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
 //        chunk_not_dup++; //count the block that not deduplicate
         if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
@@ -224,7 +230,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
 }
 
 int dedup::dedup_bloom(char *bch_result, int bch_length) {
-    bloom *blf = bloom::Get_bloom();
+
     std::string str;
     bch_result[bch_length] = '\0';
     str = bch_result;
@@ -237,7 +243,7 @@ int dedup::dedup_bloom(char *bch_result, int bch_length) {
 }
 
 int dedup::dedup_cache(char *bch_result, char *chk_cont, int bch_length, int bloom_flag) {
-    cache *cac = cache::Get_cache();
+
 
     if(bloom_flag == 1) {
         int res = cac -> cache_find(bch_result, chk_cont, bch_length);
@@ -261,7 +267,7 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
             return 1;
         }
         else if (cache_flag == 2) {//cache crash
-            mt *mp = mt::Get_mt();
+
             if (mp->insert_mt(bch_result, chk_cont, bch_lengh)) {
                 return 2;
             }
@@ -271,7 +277,7 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
             }
         }
         else {//cache missed
-            mt *mp = mt::Get_mt();
+
             struct addr *head_addr = NULL;
             char read_buf[READ_LENGTH+1];
             head_addr = mp -> Get_addr(bch_result, bch_lengh);
@@ -284,7 +290,7 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
             else{ //ecc exist, so we need read the block from ssd
                 while(head_addr != NULL){
                     memset(read_buf, 0, READ_LENGTH+1);
-                    mp->read_block(head_addr, read_buf);
+                    read_block(head_addr, read_buf);
                     if(memcmp(read_buf, chk_cont, READ_LENGTH) == 0){ //chunk exist
                         return 1;
                     }
@@ -301,7 +307,7 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
         }
     }
     else{ //bloom missed
-        mt *mp = mt::Get_mt();
+
         //cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
 //        chunk_not_dup++; //count the block that not deduplicate
         if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
