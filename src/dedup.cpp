@@ -26,10 +26,12 @@ dedup::dedup() {
     time_aver = 0.0;
     chunk_not_dup = 0;
 
+    fade_crash_number = 0;
+    crash_number = 0;
     mp = mt::Get_mt();
     cac = cache::Get_cache();
     blf = bloom::Get_bloom();
-
+    cra_t = NULL;
     bch = init_bch(CONFIG_M, CONFIG_T, 0);
 
     std::cout<<"************************************************************************************"
@@ -55,6 +57,9 @@ dedup::~dedup() {
         }
 
         std::cout << "The average time is " << time_aver <<"ms"<< std::endl<<std::endl;
+        test_all_crash();
+        std::cout << "Fade crash number is " << fade_crash_number << std::endl;
+        std::cout << "Crash number is " << crash_number << std::endl;
     }
 }
 
@@ -114,12 +119,20 @@ int dedup::file_reader(char *path) {
             break;
         memset(hv, 0, CODE_LENGTH + 1);
         memset(bch_result, 0, 2 * CODE_LENGTH + 1);
-        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
-        ByteToHexStr(hv, bch_result, CODE_LENGTH);
+//        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
+
         chunk_num++;
 ////////////////////////////////////////////////////////////////////////////////
 
+
+        stat_t = ti.get_time();
+        MD5((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
+        end_t = ti.get_time();
+        ti.cp_all((end_t - stat_t) * 1000, 0);
+        /////////////////////////////////////////////////////////////
+        ByteToHexStr(hv, bch_result, CODE_LENGTH);
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
+        /////////////////////////////////////////////////////////////
         stat_t = ti.get_time();
         cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
         mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
@@ -130,7 +143,7 @@ int dedup::file_reader(char *path) {
         }
 
 
-        ti.cp_all((end_t - stat_t) * 1000);
+        ti.cp_all((end_t - stat_t) * 1000, 1);
 //        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
 
 
@@ -297,8 +310,16 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
                     head_addr = head_addr -> next;
                 }
 //                chunk_not_dup++; //count the block that not deduplicate
-                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
+                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){ //insert succeed and ecc crash
+                    struct crash_test *cp = NULL;
+                    cp = new crash_test;
+                    memcpy(cp -> reference1, read_buf, READ_LENGTH);
+                    memcpy(cp -> reference2, chk_cont, READ_LENGTH);
+                    cp -> next = cra_t;
+                    cra_t = cp;
+                    fade_crash_number ++;
                     return 2;
+                }
                 else{
                     std::cout << "insert mt error!" << std::endl;
                     exit(-1);
@@ -318,3 +339,31 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
         }
     }
 }
+
+int dedup::test_crash(char *reference1, char *reference2) {
+    uint8_t hv1[CODE_LENGTH + 1];
+    uint8_t hv2[CODE_LENGTH + 1];
+
+    MD5((unsigned char *)reference1, (size_t)4096, (unsigned char *)hv1);
+    MD5((unsigned char *)reference2, (size_t)4096, (unsigned char *)hv2);
+
+    if(memcmp(reference1, reference2, BLOCK_SIZE) != 0){
+        if(memcmp(hv1, hv2, CODE_LENGTH) == 0){
+            crash_number ++;
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+int dedup::test_all_crash() {
+    struct crash_test *p = cra_t;
+    while(p != NULL){
+        test_crash(p -> reference1, p ->reference2);
+        p = p -> next;
+    }
+    return 0;
+}
+
+

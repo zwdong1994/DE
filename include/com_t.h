@@ -14,7 +14,7 @@ class cp_t{
 
 public:
     double get_time(void);
-    uint8_t cp_all(double elps_time);
+    uint8_t cp_all(double elps_time, int i);
     uint8_t cp_aver(char *fn);
 
     cp_t();
