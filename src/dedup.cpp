@@ -119,22 +119,22 @@ int dedup::file_reader(char *path) {
             break;
         memset(hv, 0, CODE_LENGTH + 1);
         memset(bch_result, 0, 2 * CODE_LENGTH + 1);
-//        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
+        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
 
         chunk_num++;
 ////////////////////////////////////////////////////////////////////////////////
 
 
-        stat_t = ti.get_time();
-        MD5((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
-        end_t = ti.get_time();
-        ti.cp_all((end_t - stat_t) * 1000, 0);
+//        stat_t = ti.get_time();
+//        MD5((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
+//        end_t = ti.get_time();
+//        ti.cp_all((end_t - stat_t) * 1000, 0);
         /////////////////////////////////////////////////////////////
         ByteToHexStr(hv, bch_result, CODE_LENGTH);
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
         /////////////////////////////////////////////////////////////
         stat_t = ti.get_time();
-        cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
+//        cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
         mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
         end_t = ti.get_time();
         if(mt_flag == 2){
@@ -275,6 +275,7 @@ int dedup::dedup_cache(char *bch_result, char *chk_cont, int bch_length, int blo
 }
 
 int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag){
+    int mid_crash_num = 0;
     if(bloom_flag == 1 && cache_flag != 4) { //bloom hit
         if (cache_flag == 1) { //cache hit
             return 1;
@@ -299,11 +300,16 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
                 if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
                     return 2;
                 }
+                else{
+                    std::cout << "insert mt error!" << std::endl;
+                    exit(-1);
+                }
             }
             else{ //ecc exist, so we need read the block from ssd
                 while(head_addr != NULL){
                     memset(read_buf, 0, READ_LENGTH+1);
                     read_block(head_addr, read_buf);
+                    mid_crash_num ++;
                     if(memcmp(read_buf, chk_cont, READ_LENGTH) == 0){ //chunk exist
                         return 1;
                     }
@@ -317,7 +323,7 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
                     memcpy(cp -> reference2, chk_cont, READ_LENGTH);
                     cp -> next = cra_t;
                     cra_t = cp;
-                    fade_crash_number ++;
+                    fade_crash_number += mid_crash_num;
                     return 2;
                 }
                 else{
