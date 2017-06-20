@@ -15,6 +15,12 @@
 #define CONFIG_M 8
 #define CONFIG_T 13
 #define CODE_LENGTH 16
+
+struct crash_test{
+    char reference1[READ_LENGTH];
+    char reference2[READ_LENGTH];
+    struct crash_test *next;
+};
 class dedup{
 public:
     dedup();
@@ -36,10 +42,17 @@ private:
     int dedup_bloom(char bch_result[], int bch_length);
     int dedup_cache(char bch_result[], char *chk_cont, int bch_length, int bloom_flag);
     int dedup_mt(char bch_result[], char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag);
+    int test_crash(char *reference1, char *reference2);
+    int test_all_crash();
+    int crash_number;
+    int fade_crash_number;
+    struct crash_test *cra_t;
+
     mt *mp;
     cache *cac;
     bloom *blf;
 };
+
 
 
 #endif //ED_DEDUP_H

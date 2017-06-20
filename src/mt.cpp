@@ -28,7 +28,7 @@ mt::mt() {
     max_size_addr = ssd_capacity * 1024 * 1024 / 4;
     alloc_addr_point = 1;
     dev_name = new char[30];
-    strcpy(dev_name, "/dev/sdc1");
+    strcpy(dev_name, "/dev/nvme0n1p1");
     mt_fd = open(dev_name, O_RDWR|O_LARGEFILE);
     if(mt_fd == -1){
         std::cout<<"open "<< dev_name <<" error!"<<std::endl;

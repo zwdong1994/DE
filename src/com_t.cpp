@@ -33,9 +33,9 @@ double cp_t::get_time(void) {
     return (mytime.tv_sec*1.0+mytime.tv_usec/1000000.0);
 }
 
-uint8_t cp_t::cp_all(double elps_time){
+uint8_t cp_t::cp_all(double elps_time, int i){
     time_total += elps_time;
-    chunk_num++;
+    chunk_num += i;
     return 1;
 }
 

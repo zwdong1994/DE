@@ -45,8 +45,6 @@ int cache::cache_insert(char *code, char chunk_reference[], int code_length) {
     memcpy(new_code_chunk -> chunk, chunk_reference, CHUNK_SIZE);
     chunk_container[mid_code] = new_code_chunk;
 
-    code[code_length] = '\0';
-    mid_code = code;
 
     if(head_cache == NULL){ //cache is empty
 
@@ -72,7 +70,14 @@ int cache::cache_insert(char *code, char chunk_reference[], int code_length) {
             return 1;
         }
         else if( cache_size == MAX_CACHE_SIZE) {
-            delete chunk_container[tail_cache->code];
+            struct Code_chunk *chunk_info = NULL, *hp_chunk = NULL;
+            chunk_info = chunk_container[tail_cache -> code];
+            hp_chunk = chunk_info;
+            while(hp_chunk != NULL) {
+                hp_chunk = hp_chunk -> next;
+                delete chunk_info;
+                chunk_info = hp_chunk;
+            }
             chunk_container.erase(tail_cache -> code); //delete the tail member in the R-BTree
             add_member -> code = mid_code;
             add_member -> next = head_cache;
@@ -105,18 +110,18 @@ int cache::cache_find(char *code, char *chunk_reference, int code_length) {
     std::string mid_string;
     code[code_length] = '\0';
     mid_string = code;
+    struct Code_chunk *chunk_info = NULL;
+    chunk_info = chunk_container[mid_string];
+    if(chunk_info != NULL){ //ecc exist
 
-    if(chunk_container[mid_string] != NULL){ //ecc exist
-        struct Code_chunk *chunk_info = NULL;
-        chunk_info = chunk_container[mid_string];
         if(comp_chunk(chunk_reference, chunk_info)){//chunk exist
             if(!cache_update(code, code_length)) { //update cache error
                 std::cout << "cache update error!" << std::endl;
                 exit(-1);
             }
             return 1;
-        }
-        else{
+        }/*
+        else{ //Notice: if we want to achieve crash cache, we need to synthetic the data in the ssd to the cache.
             struct Code_chunk *new_code_chunk = NULL;
             new_code_chunk = new Code_chunk;
             memcpy(new_code_chunk -> chunk, chunk_reference, CHUNK_SIZE);
@@ -128,6 +133,14 @@ int cache::cache_find(char *code, char *chunk_reference, int code_length) {
                 exit(-1);
             }
             return 2; // ecc crash happened
+        }*/
+        else{
+            memcpy(chunk_info -> chunk, chunk_reference, CHUNK_SIZE);
+            if(!cache_update(code, code_length)) { //update cache error
+                std::cout << "cache update error!" << std::endl;
+                exit(-1);
+            }
+            return 0;
         }
     }
     else{ //the ecc is not in the cache, so insert it into the cache

@@ -16,7 +16,7 @@ void random_string(char str[], int length){
 }
 
 int main(){
-    char *block[1000];
+    char *block[20000];
     char *ecc_code[10001];
     char *ecc_crash[100];
     int flag;
@@ -25,7 +25,7 @@ int main(){
     int crash = 0;
     cache *cac = cache::Get_cache();
     int i;
-    for(i = 0; i < 1000; i++){
+    for(i = 0; i < 20000; i++){
         block[i] = new char[4097];
         random_string(block[i], 4096);
     }
@@ -89,7 +89,7 @@ int main(){
 /////////////////////////////////////////////////////////////////////////////
 ///                              test find                                ///
 /////////////////////////////////////////////////////////////////////////////
-    for(i = 0; i < 1000; i++){
+    for(i = 0; i < 20000; i++){
         flag = cac -> cache_find(ecc_crash[i%100], block[i], 32);
         if( flag == 1){
             exist++;
@@ -102,7 +102,7 @@ int main(){
 
         }
     }
-    for(i = 0; i < 1000; i++){
+/*    for(i = 0; i < 1000; i++){
         flag = cac -> cache_find(ecc_crash[i%100], block[i], 32);
         if( flag == 1){
             exist++;
@@ -114,7 +114,7 @@ int main(){
             not_exist++;
 
         }
-    }
+    }*/
     std::cout<< "exist: " << exist << std::endl
              << "crash: " << crash << std::endl
              << "not exist: " << not_exist << std::endl;
