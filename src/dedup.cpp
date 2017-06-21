@@ -25,6 +25,8 @@ dedup::dedup() {
     time_total = 0.0;
     time_aver = 0.0;
     chunk_not_dup = 0;
+    block_id = 0;
+    head_10000_time = 0.0;
 
     fade_crash_number = 0;
     crash_number = 0;
@@ -37,10 +39,15 @@ dedup::dedup() {
     std::cout<<"************************************************************************************"
              <<"test start!"
              <<"************************************************************************************"<<std::endl;
-    std::cout<<std::left<<std::setw(100)<<"Filename"
+    /*std::cout<<std::left<<std::setw(100)<<"Filename"
              <<std::left<<std::setw(30)<<"Total time(ms)"
              <<std::left<<std::setw(30)<<"Chunk number"
-             <<std::left<<std::setw(30)<<"Average time(ms)"<<std::endl;
+             <<std::left<<std::setw(30)<<"Average time(ms)"<<std::endl;*/
+    std::cout<<std::left<<std::setw(30)<<"Block Number"
+             <<std::left<<std::setw(30)<<"10000 Average Time(ms)"
+             <<std::left<<std::setw(30)<<"Dedup Ratio(%)"
+             <<std::left<<std::setw(30)<<"Average Time(ms)"
+             <<std::left<<std::setw(30)<<"Total Time(s)"<<std::endl;
 }
 
 dedup::~dedup() {
@@ -107,6 +114,7 @@ int dedup::file_reader(char *path) {
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    char blk_num_str[30];
     cp_t ti;
 
     if((fp = fopen(path, "r")) == NULL){
@@ -117,11 +125,24 @@ int dedup::file_reader(char *path) {
         memset(chk_cont, 0, READ_LENGTH);
         if(fread(chk_cont, sizeof(char), READ_LENGTH, fp) == 0)
             break;
+        chunk_num++;
+        block_id ++;
+        if(block_id % 10000 == 0){
+            sprintf(blk_num_str, "%ld-%ld", block_id - 10000, block_id - 1);
+            std::cout.setf(std::ios::fixed);
+            std::cout<<std::left<<std::setw(30)<< blk_num_str
+                     <<std::left<<std::setw(30)<< (time_total - head_10000_time) / 10000
+                     <<std::left<<std::setw(30)<< (chunk_num - chunk_not_dup) * 100.0 / chunk_num
+                     <<std::left<<std::setw(30)<< time_total / chunk_num
+                     <<std::left<<std::setw(30)<< time_total / 1000 <<std::endl;
+            head_10000_time = time_total;
+        }
         memset(hv, 0, CODE_LENGTH + 1);
         memset(bch_result, 0, 2 * CODE_LENGTH + 1);
         encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
 
-        chunk_num++;
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -140,17 +161,19 @@ int dedup::file_reader(char *path) {
         if(mt_flag == 2){
             chunk_not_dup++;
             write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
-            ti.cp_all(0.2, 0);
+            //ti.cp_all(0.2, 0);
+            time_total += 0.2;
         }
 
 
-        ti.cp_all((end_t - stat_t) * 1000, 1);
+        //ti.cp_all((end_t - stat_t) * 1000, 1);
+        time_total += (end_t - stat_t) * 1000;
 //        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
 
 
     }
-    ti.cp_aver(path);
-    time_total += ti.time_total;
+    //ti.cp_aver(path);
+    //time_total += ti.time_total;
     fclose(fp);
     return 0;
 }

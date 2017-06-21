@@ -47,6 +47,8 @@ private:
     int crash_number;
     int fade_crash_number;
     struct crash_test *cra_t;
+    uint64_t block_id;
+    double head_10000_time;
 
     mt *mp;
     cache *cac;
