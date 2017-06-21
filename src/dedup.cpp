@@ -113,6 +113,7 @@ int dedup::file_reader(char *path) {
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    char blk_num_str[30];
     cp_t ti;
 
     if((fp = fopen(path, "r")) == NULL){
@@ -125,8 +126,9 @@ int dedup::file_reader(char *path) {
             break;
         block_id ++;
         if(block_id % 10000 == 0){
+            sprintf(blk_num_str, "%ld-%ld", block_id - 10000, block_id - 1);
             std::cout.setf(std::ios::fixed);
-            std::cout<<std::left<<std::setw(9)<< block_id - 10000 << "-" << std::left <<std::setw(21)<<block_id - 1
+            std::cout<<std::left<<std::setw(30)<< blk_num_str
                      <<std::left<<std::setw(30)<< (time_total - head_10000_time) / 10000
                      <<std::left<<std::setw(30)<< (chunk_num - chunk_not_dup) * 100.0 / chunk_num
                      <<std::left<<std::setw(30)<< time_total / chunk_num
@@ -144,7 +146,8 @@ int dedup::file_reader(char *path) {
         stat_t = ti.get_time();
         MD5((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
         end_t = ti.get_time();
-        ti.cp_all((end_t - stat_t) * 1000, 0);
+        //ti.cp_all((end_t - stat_t) * 1000, 0);
+        time_total += (end_t - stat_t) * 1000;
         /////////////////////////////////////////////////////////////
         ByteToHexStr(hv, bch_result, CODE_LENGTH);
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
