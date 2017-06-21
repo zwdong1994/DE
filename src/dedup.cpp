@@ -25,7 +25,8 @@ dedup::dedup() {
     time_total = 0.0;
     time_aver = 0.0;
     chunk_not_dup = 0;
-
+    block_id = 0;
+    head_10000_time = 0.0;
     fade_crash_number = 0;
     crash_number = 0;
     mp = mt::Get_mt();
@@ -37,10 +38,15 @@ dedup::dedup() {
     std::cout<<"************************************************************************************"
              <<"test start!"
              <<"************************************************************************************"<<std::endl;
-    std::cout<<std::left<<std::setw(100)<<"Filename"
+    /*std::cout<<std::left<<std::setw(100)<<"Filename"
              <<std::left<<std::setw(30)<<"Total time(ms)"
              <<std::left<<std::setw(30)<<"Chunk number"
-             <<std::left<<std::setw(30)<<"Average time(ms)"<<std::endl;
+             <<std::left<<std::setw(30)<<"Average time(ms)"<<std::endl;*/
+    std::cout<<std::left<<std::setw(30)<<"Block Number"
+             <<std::left<<std::setw(30)<<"10000 Average Time(ms)"
+             <<std::left<<std::setw(30)<<"Dedup Ratio(%)"
+             <<std::left<<std::setw(30)<<"Average Time(ms)"
+             <<std::left<<std::setw(30)<<"Total Time(s)"<<std::endl;
 }
 
 dedup::~dedup() {
@@ -117,6 +123,16 @@ int dedup::file_reader(char *path) {
         memset(chk_cont, 0, READ_LENGTH);
         if(fread(chk_cont, sizeof(char), READ_LENGTH, fp) == 0)
             break;
+        block_id ++;
+        if(block_id % 10000 == 0){
+            std::cout.setf(std::ios::fixed);
+            std::cout<<std::left<<std::setw(9)<< block_id - 10000 << "-" << std::left <<std::setw(21)<<block_id - 1
+                     <<std::left<<std::setw(30)<< (time_total - head_10000_time) / 10000
+                     <<std::left<<std::setw(30)<< (chunk_num - chunk_not_dup) * 100.0 / chunk_num
+                     <<std::left<<std::setw(30)<< time_total / chunk_num
+                     <<std::left<<std::setw(30)<< time_total / 1000 <<std::endl;
+            head_10000_time = time_total;
+        }
         memset(hv, 0, CODE_LENGTH + 1);
         memset(bch_result, 0, 2 * CODE_LENGTH + 1);
 //        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
@@ -134,22 +150,24 @@ int dedup::file_reader(char *path) {
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
         /////////////////////////////////////////////////////////////
         stat_t = ti.get_time();
-        cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
+//        cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
         mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
         end_t = ti.get_time();
         if(mt_flag == 2){
             chunk_not_dup++;
             write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            //ti.cp_all(0.2, 0);
+            time_total += 0.2;
         }
 
 
-        ti.cp_all((end_t - stat_t) * 1000, 1);
+        //ti.cp_all((end_t - stat_t) * 1000, 1);
 //        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
-
+        time_total += (end_t - stat_t) * 1000;
 
     }
-    ti.cp_aver(path);
-    time_total += ti.time_total;
+    //ti.cp_aver(path);
+
     fclose(fp);
     return 0;
 }
@@ -305,7 +323,10 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
                     exit(-1);
                 }
             }
-            else{ //ecc exist, so we need read the block from ssd
+            else{
+                return 1;
+            }
+            /*else{ //ecc exist, so we need read the block from ssd
                 while(head_addr != NULL){
                     memset(read_buf, 0, READ_LENGTH+1);
                     read_block(head_addr, read_buf);
@@ -330,7 +351,7 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
                     std::cout << "insert mt error!" << std::endl;
                     exit(-1);
                 }
-            }
+            }*/
         }
     }
     else{ //bloom missed

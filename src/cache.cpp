@@ -116,7 +116,7 @@ int cache::cache_find(char *code, char *chunk_reference, int code_length) {
             }
             return 1;
         }
-        else{
+        /*else{
             struct Code_chunk *new_code_chunk = NULL;
             new_code_chunk = new Code_chunk;
             memcpy(new_code_chunk -> chunk, chunk_reference, CHUNK_SIZE);
@@ -128,6 +128,14 @@ int cache::cache_find(char *code, char *chunk_reference, int code_length) {
                 exit(-1);
             }
             return 2; // ecc crash happened
+        }*/
+        else{
+            memcpy(chunk_info -> chunk, chunk_reference, CHUNK_SIZE);
+            if(!cache_update(code, code_length)) { //update cache error
+                std::cout << "cache update error!" << std::endl;
+                exit(-1);
+            }
+            return 0;
         }
     }
     else{ //the ecc is not in the cache, so insert it into the cache

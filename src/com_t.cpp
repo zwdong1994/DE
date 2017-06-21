@@ -18,13 +18,13 @@ cp_t::cp_t() {
 }
 
 cp_t::~cp_t() {
-    if(time_total > 0) {
+    /*if(time_total > 0) {
         std::cout.setf(std::ios::fixed);
         std::cout<<std::left<<std::setw(100)<<filename
                  <<std::left<<std::setw(30)<<time_total
                  <<std::left<<std::setw(30)<<chunk_num
                  <<std::left<<std::setw(8)<<std::setprecision(6)<<time_aver<<std::endl;
-    }
+    }*/
 }
 
 double cp_t::get_time(void) {
