@@ -124,6 +124,7 @@ int dedup::file_reader(char *path) {
         memset(chk_cont, 0, READ_LENGTH);
         if(fread(chk_cont, sizeof(char), READ_LENGTH, fp) == 0)
             break;
+        chunk_num++;
         block_id ++;
         if(block_id % 10000 == 0){
             sprintf(blk_num_str, "%ld-%ld", block_id - 10000, block_id - 1);
@@ -139,7 +140,7 @@ int dedup::file_reader(char *path) {
         memset(bch_result, 0, 2 * CODE_LENGTH + 1);
 //        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
 
-        chunk_num++;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 
