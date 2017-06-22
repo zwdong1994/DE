@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
+#include <sys/time.h>
 #include "cache.h"
 
 void random_string(char str[], int length){
@@ -15,6 +16,12 @@ void random_string(char str[], int length){
     str[length] = '\0';
 }
 
+double get_time(void) {
+    struct	timeval	mytime;
+    gettimeofday(&mytime,NULL);
+    return (mytime.tv_sec*1.0+mytime.tv_usec/1000000.0);
+}
+
 int main(){
     char *block[20000];
     char *ecc_code[10001];
@@ -23,6 +30,7 @@ int main(){
     int exist = 0;
     int not_exist = 0;
     int crash = 0;
+    double time_total = 0.0, stat_time = 0.0, end_time = 0.0;
     cache *cac = cache::Get_cache();
     int i;
     for(i = 0; i < 20000; i++){
@@ -89,8 +97,12 @@ int main(){
 /////////////////////////////////////////////////////////////////////////////
 ///                              test find                                ///
 /////////////////////////////////////////////////////////////////////////////
+
     for(i = 0; i < 20000; i++){
+        stat_time = get_time();
         flag = cac -> cache_find(ecc_crash[i%100], block[i], 32);
+        end_time = get_time();
+        std::cout<< (end_time - stat_time) * 1000 << "ms" << std::endl;
         if( flag == 1){
             exist++;
         }
@@ -102,6 +114,7 @@ int main(){
 
         }
     }
+
 /*    for(i = 0; i < 1000; i++){
         flag = cac -> cache_find(ecc_crash[i%100], block[i], 32);
         if( flag == 1){

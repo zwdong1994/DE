@@ -54,7 +54,7 @@ int main(){
             return 0;
         }
         end_t = ti.get_time();
-        ti.cp_all((end_t - stat_t) * 1000);
+        ti.cp_all((end_t - stat_t) * 1000, 1);
     }
     ti.cp_aver("test mt");
     for(i = 0; i < 100; i++){
@@ -64,7 +64,7 @@ int main(){
         else{
             while(head_addr != NULL){
                 memset(read_buf, 0, 4097);
-                mt_index->read_block(head_addr, read_buf);
+                read_block(head_addr, read_buf);
                 if(memcmp(read_buf, block[i], 4096) == 0){ //chunk exist
                     exist++;
                     break;
@@ -83,7 +83,7 @@ int main(){
         else{
             while(head_addr != NULL){
                 memset(read_buf, 0, 4097);
-                mt_index->read_block(head_addr, read_buf);
+                read_block(head_addr, read_buf);
                 if(memcmp(read_buf, block[i%100], 4096) == 0){ //chunk exist
                     exist++;
                     break;

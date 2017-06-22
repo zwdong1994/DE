@@ -11,6 +11,7 @@ link_libraries("/usr/lib/x86_64-linux-gnu/libcrypto.a")
 link_directories(/lib/x86_64-linux-gnu)
 
 message("${CMAKE_SOURCE_DIR}")
+
 set(ATTACHED_FILES ../src/bloom_func.cpp ../include/bloom_func.h ../src/cache.cpp ../include/cache.h
                     ../src/com_t.cpp ../include/com_t.h ../src/mt.cpp ../include/mt.h ../include/dedup.h
                     ../src/dedup.cpp ../src/bch.c ../include/bch.h)
