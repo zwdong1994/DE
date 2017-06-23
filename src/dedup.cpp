@@ -145,7 +145,8 @@ int dedup::file_reader(char *path) {
 
 
         stat_t = ti.get_time();
-        MD5((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
+        //MD5((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
+        SHA256((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
         end_t = ti.get_time();
         //ti.cp_all((end_t - stat_t) * 1000, 0);
         time_total += (end_t - stat_t) * 1000;
