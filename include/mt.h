@@ -36,7 +36,7 @@ private:
     mt &operator = (mt const&);
     ~mt();
 
-
+    struct aiocb64 aio;
 
     unsigned int ssd_capacity;
     unsigned long max_size_addr; //the maximum block address

@@ -12,7 +12,7 @@
 
 #include "com_t.h"
 
-
+static struct aiocb64 aio;
 static char *dev_name;
 static int mt_fd;
 static struct aiocb64 myaio;
@@ -98,24 +98,24 @@ int write_block(unsigned long offset, char *chunk_reference) {
 //    double stat_t = 0.0, end_t = 0.0;
 //    std::cout << "11" << std::endl;
     cp_t ti;
-    struct aiocb64 *aio = NULL;
-    aio = new aiocb64;
+//    struct aiocb64 *aio = NULL;
+//    aio = new aiocb64;
 //    std::cout << "11" << std::endl;
 //    struct aiocb64 *cblist[1];
-    bzero((char *)aio, sizeof(struct aiocb64));
+    bzero((char *)&aio, sizeof(struct aiocb64));
 //    bzero( (char *)cblist, sizeof(cblist) );
-    aio->aio_buf = myaio.aio_buf;
+    aio.aio_buf = myaio.aio_buf;
 
-    aio->aio_fildes = mt_fd;
-    aio->aio_nbytes = BLOCK_SIZE;
-    aio->aio_offset = offset * BLOCK_SIZE;
-    memcpy((void *)aio->aio_buf, (void *)chunk_reference, BLOCK_SIZE);
+    aio.aio_fildes = mt_fd;
+    aio.aio_nbytes = BLOCK_SIZE;
+    aio.aio_offset = offset * BLOCK_SIZE;
+    memcpy((void *)aio.aio_buf, (void *)chunk_reference, BLOCK_SIZE);
 //    stat_t = ti.get_time();
 //    cblist[0] = &aio;
 //    std::cout << "11" << std::endl;
-    aio_write64(aio);
+    aio_write64(&aio);
 //    aio_suspend64(cblist, 1, NULL);
-    while(EINPROGRESS == aio_error64(aio));
+    while(EINPROGRESS == aio_error64(&aio));
 //    std::cout << "11" << std::endl;
 //    end_t = ti.get_time();
 
@@ -123,14 +123,14 @@ int write_block(unsigned long offset, char *chunk_reference) {
 //    time_total += ((end_t - stat_t) * 1000);
 //    write_time++;
 //    free((void *)aio.aio_buf);
-    delete aio;
+//    delete aio;
 //    std::cout << "11" << std::endl;
     return 1;
 }
 
 int read_block(struct addr *write_addr, char *chunk_reference) {
 
-    struct aiocb64 aio;
+
 //    struct aiocb64 *cblist[1];
     bzero((char *)&aio, sizeof(struct aiocb64));
 //    bzero( (char *)cblist, sizeof(cblist) );
