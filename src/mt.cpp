@@ -97,7 +97,7 @@ int write_block(unsigned long offset, char *chunk_reference) {
 
 //    double stat_t = 0.0, end_t = 0.0;
 //    std::cout << "11" << std::endl;
-    cp_t ti;
+//    cp_t ti;
 
 //    std::cout << "11" << std::endl;
 //    struct aiocb64 *cblist[1];
@@ -122,7 +122,7 @@ int write_block(unsigned long offset, char *chunk_reference) {
 //    time_total += ((end_t - stat_t) * 1000);
 //    write_time++;
 //    free((void *)aio.aio_buf);
-    delete aio;
+
 //    std::cout << "11" << std::endl;
     return 1;
 }

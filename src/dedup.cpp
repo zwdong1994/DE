@@ -8,16 +8,22 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <iomanip>
+#include <pthread.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <iostream>
+#include <unistd.h>
 #include <openssl/sha.h>
 #include <openssl/md5.h>
 #include "dedup.h"
 
 
 #include "com_t.h"
+
+
+pthread_mutex_t mutex_filereader = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_num_control = PTHREAD_MUTEX_INITIALIZER;
 
 
 dedup::dedup() {
@@ -27,6 +33,8 @@ dedup::dedup() {
     chunk_not_dup = 0;
     block_id = 0;
     head_10000_time = 0.0;
+
+    file_number = 0;
 
     fade_crash_number = 0;
     crash_number = 0;
@@ -97,16 +105,37 @@ void dedup::travel_dir(char *path) {
             travel_dir(child_path);
         }
         else{
+            pthread_t pid;
+            int err_p = 0;
+            para mid_para;
+            mid_para.path = child_path;
+            mid_para.this_ = this;
             sprintf(child_path,"%s/%s",path,ent->d_name);
+            if(file_number >= 5){
+                pthread_mutex_lock(&mutex_num_control);
+            }
 //            std::cout<<child_path <<std::endl;
-            file_reader(child_path);
+            err_p = pthread_create(&pid, NULL, start_pthread, (void *)&mid_para);
+            if(err_p){
+                std::cout<< "Create pthread error!" <<std::endl;
+                exit(-2);
+            }
+
+            file_number ++;
         }
     }
+}
+
+static void *dedup::start_pthread(void *arg) {
+    para *mid = (para *)arg;
+    mid -> this_ ->file_reader(mid -> path);
+    return nullptr;
 }
 
 int dedup::file_reader(char *path) {
     uint8_t hv[CODE_LENGTH + 1];
     char bch_result[2 * CODE_LENGTH + 1];
+
     FILE *fp = NULL;
     uint8_t chk_cont[4097];
     int bloom_flag = 0;
@@ -123,6 +152,8 @@ int dedup::file_reader(char *path) {
     }
     while(1){
         memset(chk_cont, 0, READ_LENGTH);
+        //pthread_mutex_lock
+        pthread_mutex_lock(&mutex_filereader);
         if(fread(chk_cont, sizeof(char), READ_LENGTH, fp) == 0)
             break;
         chunk_num++;
@@ -170,11 +201,16 @@ int dedup::file_reader(char *path) {
         time_total += (end_t - stat_t) * 1000;
 //        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
 
+        //pthread_mutex_unlock
+        pthread_mutex_unlock(&mutex_filereader);
 
     }
     //ti.cp_aver(path);
     //time_total += ti.time_total;
     fclose(fp);
+    pthread_mutex_unlock(&mutex_num_control);
+    file_number --;
+
     return 0;
 }
 
@@ -396,5 +432,7 @@ int dedup::test_all_crash() {
     }
     return 0;
 }
+
+
 
 

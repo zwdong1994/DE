@@ -6,6 +6,7 @@
 #define ED_DEDUP_H
 
 #include <stdint.h>
+
 #include "mt.h"
 #include "bch.h"
 #include "bloom_func.h"
@@ -28,7 +29,7 @@ public:
 
     void travel_dir(char path[]);
     int dedup_func(char path[]);
-    int file_reader(char path[]);
+    int file_reader(char *c_path);
     int dedup_process(char bch_result[], char *chk_cont, int bch_length);
     uint64_t chunk_num;
     double time_total;
@@ -37,6 +38,11 @@ public:
 
 private:
 
+    typedef struct mid_para{
+        dedup *this_;
+        char *path;
+    }para;
+    static void* start_pthread(void *arg);
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
     struct bch_control *bch;
     int dedup_bloom(char bch_result[], int bch_length);
@@ -49,6 +55,8 @@ private:
     struct crash_test *cra_t;
     uint64_t block_id;
     double head_10000_time;
+
+    int file_number;
 
     mt *mp;
     cache *cac;
