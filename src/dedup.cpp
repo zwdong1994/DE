@@ -376,8 +376,8 @@ int dedup::test_crash(char *reference1, char *reference2) {
     uint8_t hv1[CODE_LENGTH + 1];
     uint8_t hv2[CODE_LENGTH + 1];
 
-    MD5((unsigned char *)reference1, (size_t)4096, (unsigned char *)hv1);
-    MD5((unsigned char *)reference2, (size_t)4096, (unsigned char *)hv2);
+    SHA256((unsigned char *)reference1, (size_t)4096, (unsigned char *)hv1);
+    SHA256((unsigned char *)reference2, (size_t)4096, (unsigned char *)hv2);
 
     if(memcmp(reference1, reference2, BLOCK_SIZE) != 0){
         if(memcmp(hv1, hv2, CODE_LENGTH) == 0){

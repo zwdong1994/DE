@@ -14,7 +14,7 @@
 #define READ_LENGTH 4096
 #define CONFIG_M 8
 #define CONFIG_T 13
-#define CODE_LENGTH 16
+#define CODE_LENGTH 32
 
 struct crash_test{
     char reference1[READ_LENGTH];
