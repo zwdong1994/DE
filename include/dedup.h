@@ -40,7 +40,7 @@ private:
 
     typedef struct mid_para{
         dedup *this_;
-        char *path;
+        char path[512];
     }para;
     static void* start_pthread(void *arg);
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
@@ -62,6 +62,7 @@ private:
     cache *cac;
     bloom *blf;
 };
+
 
 
 
