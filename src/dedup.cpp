@@ -22,8 +22,9 @@
 #include "com_t.h"
 
 
-pthread_mutex_t mutex_filereader = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex_num_control = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex_filereader = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex_num_control = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex_file_num = PTHREAD_MUTEX_INITIALIZER;
 
 
 dedup::dedup() {
@@ -80,8 +81,7 @@ dedup::~dedup() {
 
 int dedup::dedup_func(char *path) {
     travel_dir(path);
-
-//    std::cout<<"1"<<std::endl;
+    while(file_number > 0);
     return 0;
 }
 
@@ -90,6 +90,7 @@ void dedup::travel_dir(char *path) {
     struct dirent *ent;
     char child_path[512];
     pdir = opendir(path);
+    para mid_para;
     if(pdir == NULL){
         std::cout<<"Open dir error!"<<std::endl;
         exit(-1);
@@ -107,13 +108,17 @@ void dedup::travel_dir(char *path) {
         else{
             pthread_t pid;
             int err_p = 0;
-            para mid_para;
+
             mid_para.path = child_path;
             mid_para.this_ = this;
             sprintf(child_path,"%s/%s",path,ent->d_name);
+//            std::cout<< file_number << std::endl;
             if(file_number >= 5){
                 pthread_mutex_lock(&mutex_num_control);
+//                std::cout<< "In the if " <<file_number << std::endl;
+
             }
+            file_number ++;
 //            std::cout<<child_path <<std::endl;
             err_p = pthread_create(&pid, NULL, start_pthread, (void *)&mid_para);
             if(err_p){
@@ -121,7 +126,7 @@ void dedup::travel_dir(char *path) {
                 exit(-2);
             }
 
-            file_number ++;
+
         }
     }
 }
@@ -145,17 +150,21 @@ int dedup::file_reader(char *path) {
     double end_t = 0.0;
     char blk_num_str[30];
     cp_t ti;
-
+//    std::cout<< path << std::endl;
     if((fp = fopen(path, "r")) == NULL){
         std::cout<<"Open file error!The file name is: "<<path<<std::endl;
         return 0;
     }
     while(1){
+        pthread_mutex_lock(&mutex_filereader);
         memset(chk_cont, 0, READ_LENGTH);
         //pthread_mutex_lock
-        pthread_mutex_lock(&mutex_filereader);
-        if(fread(chk_cont, sizeof(char), READ_LENGTH, fp) == 0)
+
+        if(fread(chk_cont, sizeof(char), READ_LENGTH, fp) == 0){
+            pthread_mutex_unlock(&mutex_filereader);
             break;
+        }
+
         chunk_num++;
         block_id ++;
         if(block_id % 10000 == 0){
@@ -186,7 +195,7 @@ int dedup::file_reader(char *path) {
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
         /////////////////////////////////////////////////////////////
         stat_t = ti.get_time();
-//        cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
+        cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
         mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
         end_t = ti.get_time();
         if(mt_flag == 2){
@@ -208,8 +217,12 @@ int dedup::file_reader(char *path) {
     //ti.cp_aver(path);
     //time_total += ti.time_total;
     fclose(fp);
+//    std::cout<< file_number << std::endl;
+    pthread_mutex_lock(&mutex_file_num);
     pthread_mutex_unlock(&mutex_num_control);
+//    std::cout<< "Between mutex file number " <<file_number << std::endl;
     file_number --;
+    pthread_mutex_unlock(&mutex_file_num);
 
     return 0;
 }
