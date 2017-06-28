@@ -22,9 +22,11 @@
 #include "com_t.h"
 
 
-static pthread_mutex_t mutex_filereader = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t mutex_num_control = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t mutex_file_num = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_filereader = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_num_control = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_file_num = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t mutex_start_pthread = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_delete_pthread = PTHREAD_MUTEX_INITIALIZER;
 
 
 dedup::dedup() {
@@ -36,6 +38,8 @@ dedup::dedup() {
     head_10000_time = 0.0;
 
     file_number = 0;
+
+    head_pthread_para = NULL;
 
     fade_crash_number = 0;
     crash_number = 0;
@@ -89,7 +93,7 @@ int dedup::dedup_func(char *path) {
 void dedup::travel_dir(char *path) {
     DIR *pdir;
     struct dirent *ent;
-    char child_path[512];
+
     pdir = opendir(path);
 
     if(pdir == NULL){
@@ -99,6 +103,7 @@ void dedup::travel_dir(char *path) {
 
 //    std::cout<<"1"<<std::endl;
     while((ent = readdir(pdir)) != NULL){
+        char child_path[512];
         memset(child_path, 0, 512);
         if(ent->d_type & DT_DIR){ //if the ent is dir
             if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
@@ -109,24 +114,33 @@ void dedup::travel_dir(char *path) {
         else{
             pthread_t pid;
             int err_p = 0;
-            para mid_para;
+            para *file_para;
+            file_para = new para;
 
             sprintf(child_path,"%s/%s",path,ent->d_name);
 
-            memcpy(mid_para.path, child_path, sizeof(child_path));
-            mid_para.this_ = this;
+            memcpy(file_para->path, child_path, sizeof(child_path));
+
+            file_para->this_ = this;
             if(file_number >= 5){
                 pthread_mutex_lock(&mutex_num_control);
 //                std::cout<< "In the if " <<file_number << std::endl;
 
             }
-
-            err_p = pthread_create(&pid, NULL, start_pthread, (void *)&mid_para);
+//            pthread_mutex_lock(&mutex_start_pthread);
+            err_p = pthread_create(&pid, NULL, &start_pthread, (void *)file_para);
+            file_para->pid = pid;
             if(err_p){
                 std::cout<< "Create pthread error!" <<std::endl;
                 exit(-2);
             }
-            sleep(1);
+
+            pthread_mutex_lock(&mutex_delete_pthread);
+            file_para -> next = head_pthread_para;
+            head_pthread_para = file_para;
+            pthread_mutex_unlock(&mutex_delete_pthread);
+
+//            sleep(1);
             pthread_mutex_lock(&mutex_file_num);
             file_number ++;
             pthread_mutex_unlock(&mutex_file_num);
@@ -135,7 +149,8 @@ void dedup::travel_dir(char *path) {
     }
 }
 
-static void *dedup::start_pthread(void *arg) {
+void *dedup::start_pthread(void *arg) {
+
     para *mid = (para *)arg;
     mid -> this_ ->file_reader(mid -> path);
     return nullptr;
@@ -160,6 +175,7 @@ int dedup::file_reader(char *path) {
         std::cout<<"Open file error!The file name is: "<<path<<std::endl;
         return 0;
     }
+//    pthread_mutex_unlock(&mutex_start_pthread);
 //    std::cout<< path << std::endl;
     while(1){
         pthread_mutex_lock(&mutex_filereader);
@@ -224,7 +240,7 @@ int dedup::file_reader(char *path) {
     //ti.cp_aver(path);
     //time_total += ti.time_total;
     fclose(fp);
-//   std::cout<< path << std::endl;
+   std::cout<< path << std::endl;
 //    std::cout<< file_number << std::endl;
     pthread_mutex_lock(&mutex_file_num);
     file_number --;
@@ -232,6 +248,26 @@ int dedup::file_reader(char *path) {
 //    std::cout<< "Between mutex file number " <<file_number << std::endl;
 
     pthread_mutex_unlock(&mutex_file_num);
+
+/*    pthread_mutex_lock(&mutex_delete_pthread);
+    para *p = head_pthread_para -> next, *hp = head_pthread_para;
+    if(strcmp(head_pthread_para -> path, path) == 0){
+        head_pthread_para = p -> next;
+        delete p;
+        pthread_mutex_unlock(&mutex_delete_pthread);
+        return 0;
+    }
+    while(p != NULL){
+        if(strcmp(p -> path, path) == 0){
+            hp -> next = p -> next;
+            delete p;
+            pthread_mutex_unlock(&mutex_delete_pthread);
+            return 0;
+        }
+        hp = p;
+        p = p -> next;
+    }
+    pthread_mutex_unlock(&mutex_delete_pthread);*/
 
     return 0;
 }

@@ -39,10 +39,12 @@ public:
 private:
 
     typedef struct mid_para{
+        pthread_t pid;
         dedup *this_;
         char path[512];
+        struct mid_para *next;
     }para;
-    static void* start_pthread(void *arg);
+    static void *start_pthread(void *arg);
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
     struct bch_control *bch;
     int dedup_bloom(char bch_result[], int bch_length);
@@ -57,6 +59,8 @@ private:
     double head_10000_time;
 
     int file_number;
+
+    para *head_pthread_para;
 
     mt *mp;
     cache *cac;
