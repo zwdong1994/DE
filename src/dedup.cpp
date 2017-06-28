@@ -26,7 +26,7 @@ pthread_mutex_t mutex_filereader = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex_num_control = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex_file_num = PTHREAD_MUTEX_INITIALIZER;
 //pthread_mutex_t mutex_start_pthread = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex_delete_pthread = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t mutex_delete_pthread = PTHREAD_MUTEX_INITIALIZER;
 
 
 dedup::dedup() {
@@ -64,6 +64,15 @@ dedup::dedup() {
 }
 
 dedup::~dedup() {
+    para *p = head_pthread_para, *hp = NULL;
+    while(p != NULL){
+        pthread_join(p -> pid, NULL);
+        hp = p;
+        p = p -> next;
+        delete hp;
+
+    }
+
     if(time_total > 0) {
         time_aver = time_total / chunk_num;
         std::cout <<std::endl<< "**************************"<<"This option's time performance***********************"<<std::endl;
@@ -84,9 +93,9 @@ dedup::~dedup() {
 }
 
 int dedup::dedup_func(char *path) {
+
     travel_dir(path);
-    while(file_number > 0);
-    sleep(10);
+
     return 0;
 }
 
@@ -135,10 +144,10 @@ void dedup::travel_dir(char *path) {
                 exit(-2);
             }
 
-            pthread_mutex_lock(&mutex_delete_pthread);
+//            pthread_mutex_lock(&mutex_delete_pthread);
             file_para -> next = head_pthread_para;
             head_pthread_para = file_para;
-            pthread_mutex_unlock(&mutex_delete_pthread);
+//            pthread_mutex_unlock(&mutex_delete_pthread);
 
 //            sleep(1);
             pthread_mutex_lock(&mutex_file_num);
@@ -240,7 +249,7 @@ int dedup::file_reader(char *path) {
     //ti.cp_aver(path);
     //time_total += ti.time_total;
     fclose(fp);
-   std::cout<< path << std::endl;
+//   std::cout<< path << std::endl;
 //    std::cout<< file_number << std::endl;
     pthread_mutex_lock(&mutex_file_num);
     file_number --;
