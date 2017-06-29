@@ -19,7 +19,7 @@
 #include "dedup.h"
 
 
-#include "com_t.h"
+
 
 
 pthread_mutex_t mutex_filereader = PTHREAD_MUTEX_INITIALIZER;
@@ -31,8 +31,10 @@ pthread_mutex_t mutex_file_num = PTHREAD_MUTEX_INITIALIZER;
 
 dedup::dedup() {
     chunk_num = 0;
+    read_number = 0;
     time_total = 0.0;
     time_aver = 0.0;
+    time_total_read = 0.0;
     chunk_not_dup = 0;
     block_id = 0;
     head_10000_time = 0.0;
@@ -89,6 +91,8 @@ dedup::~dedup() {
         test_all_crash();
         std::cout << "Fade crash number is " << fade_crash_number << std::endl;
         std::cout << "Crash number is " << crash_number << std::endl;
+        std::cout << "Read number is: " << read_number << std::endl;
+        std::cout << "Read average time is: " << time_total_read / read_number << std::endl;
     }
 }
 
@@ -177,7 +181,7 @@ int dedup::file_reader(char *path) {
     double stat_t = 0.0;
     double end_t = 0.0;
     char blk_num_str[30];
-    cp_t ti;
+
 
 //    std::cout<< path << std::endl;
     if((fp = fopen(path, "r")) == NULL){
@@ -403,6 +407,8 @@ int dedup::dedup_cache(char *bch_result, char *chk_cont, int bch_length, int blo
 
 int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag){
     int mid_crash_num = 0;
+    double stat_t = 0.0;
+    double end_t = 0.0;
     if(bloom_flag == 1 && cache_flag != 4) { //bloom hit
         if (cache_flag == 1) { //cache hit
             return 1;
@@ -435,7 +441,11 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
             else{ //ecc exist, so we need read the block from ssd
                 while(head_addr != NULL){
                     memset(read_buf, 0, READ_LENGTH+1);
+                    read_number ++;
+                    stat_t = ti.get_time();
                     read_block(head_addr, read_buf);
+                    end_t = ti.get_time();
+                    time_total_read += (end_t - stat_t) * 1000;
                     mid_crash_num ++;
                     if(memcmp(read_buf, chk_cont, READ_LENGTH) == 0){ //chunk exist
                         return 1;
@@ -474,18 +484,10 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
 }
 
 int dedup::test_crash(char *reference1, char *reference2) {
-    uint8_t hv1[CODE_LENGTH + 1];
-    uint8_t hv2[CODE_LENGTH + 1];
-
-    encode_bch(bch, (unsigned char *)reference1, READ_LENGTH, hv1);
-    encode_bch(bch, (unsigned char *)reference2, READ_LENGTH, hv2);
 
 
     if(memcmp(reference1, reference2, BLOCK_SIZE) != 0){
-        if(memcmp(hv1, hv2, CODE_LENGTH) == 0){
             crash_number ++;
-            return 0;
-        }
     }
 
     return 0;

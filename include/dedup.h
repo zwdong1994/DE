@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 
+#include "com_t.h"
 #include "mt.h"
 #include "bch.h"
 #include "bloom_func.h"
@@ -34,7 +35,9 @@ public:
     uint64_t chunk_num;
     double time_total;
     double time_aver;
+    double time_total_read;
     uint64_t chunk_not_dup;
+    uint64_t read_number;
 
 private:
 
@@ -44,6 +47,7 @@ private:
         char path[512];
         struct mid_para *next;
     }para;
+    cp_t ti;
     static void *start_pthread(void *arg);
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
     struct bch_control *bch;
