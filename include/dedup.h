@@ -12,6 +12,7 @@
 #include "bch.h"
 #include "bloom_func.h"
 #include "cache.h"
+#include "new_cache.h"
 
 #define READ_LENGTH 4096
 #define CONFIG_M 8
@@ -52,7 +53,7 @@ private:
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
     struct bch_control *bch;
     int dedup_bloom(char bch_result[], int bch_length);
-    int dedup_cache(char bch_result[], char *chk_cont, int bch_length, int bloom_flag);
+    int dedup_cache(std::string bch_result, char *chk_cont, int bloom_flag);
     int dedup_mt(char bch_result[], char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag);
     int test_crash(char *reference1, char *reference2);
     int test_all_crash();
@@ -67,7 +68,7 @@ private:
     para *head_pthread_para;
 
     mt *mp;
-    cache *cac;
+    new_cache *cac;
     bloom *blf;
 };
 

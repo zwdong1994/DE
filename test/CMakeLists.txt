@@ -16,8 +16,8 @@ message("${CMAKE_SOURCE_DIR}")
 
 set(ATTACHED_FILES ../src/bloom_func.cpp ../include/bloom_func.h ../src/cache.cpp ../include/cache.h
                     ../src/com_t.cpp ../include/com_t.h ../src/mt.cpp ../include/mt.h ../include/dedup.h
-                    ../src/dedup.cpp ../src/bch.c ../include/bch.h)
-set(SOURCE_FILES test_bloom.cpp test_cache.cpp test_mt.cpp test_dedup.cpp)
+                    ../src/dedup.cpp ../src/bch.c ../include/bch.h ../src/new_cache.cpp ../include/new_cache.h)
+set(SOURCE_FILES test_bloom.cpp test_cache.cpp test_mt.cpp test_dedup.cpp test_new_cache.cpp)
 
 foreach(TEST_FILE ${SOURCE_FILES})
     get_filename_component(TEST_FILE_WE ${TEST_FILE} NAME_WE)

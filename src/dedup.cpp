@@ -46,7 +46,7 @@ dedup::dedup() {
     fade_crash_number = 0;
     crash_number = 0;
     mp = mt::Get_mt();
-    cac = cache::Get_cache();
+    cac = new_cache::Get_cache();
     blf = bloom::Get_bloom();
     cra_t = NULL;
     bch = init_bch(CONFIG_M, CONFIG_T, 0);
@@ -181,7 +181,7 @@ int dedup::file_reader(char *path) {
     double stat_t = 0.0;
     double end_t = 0.0;
     char blk_num_str[30];
-
+    std::string mid_str;
 
 //    std::cout<< path << std::endl;
     if((fp = fopen(path, "r")) == NULL){
@@ -228,10 +228,11 @@ int dedup::file_reader(char *path) {
 //        ti.cp_all((end_t - stat_t) * 1000, 0);
         /////////////////////////////////////////////////////////////
         ByteToHexStr(hv, bch_result, CODE_LENGTH);
+        mid_str = bch_result;
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
         /////////////////////////////////////////////////////////////
         stat_t = ti.get_time();
-  //      cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
+        cache_flag = dedup_cache(bch_result, (char *)chk_cont, bloom_flag);
         mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
         end_t = ti.get_time();
         if(mt_flag == 2){
@@ -386,11 +387,11 @@ int dedup::dedup_bloom(char *bch_result, int bch_length) {
 
 }
 
-int dedup::dedup_cache(char *bch_result, char *chk_cont, int bch_length, int bloom_flag) {
+int dedup::dedup_cache(std::string bch_result, char *chk_cont, int bloom_flag) {
 
 
     if(bloom_flag == 1) {
-        int res = cac -> cache_find(bch_result, chk_cont, bch_length);
+        int res = cac -> cache_find(bch_result, chk_cont);
         if (res == 1) {
             return 1;
         } /*else if (res == 2) {
@@ -400,7 +401,7 @@ int dedup::dedup_cache(char *bch_result, char *chk_cont, int bch_length, int blo
         }
     }
     else{//it is also means that the block is not in the mapping table.
-        cac -> cache_insert(bch_result, chk_cont, bch_length); //insert the block into the cache
+        cac -> cache_insert(bch_result, chk_cont); //insert the block into the cache
         return 4; //bloom missed
     }
 }
