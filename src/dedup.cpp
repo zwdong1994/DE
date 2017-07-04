@@ -94,6 +94,7 @@ dedup::~dedup() {
         std::cout << "Crash number is " << crash_number << std::endl;
         std::cout << "Read number is: " << read_number << std::endl;
         std::cout << "Read average time is: " << time_total_read / read_number << std::endl;
+        std::cout << "Cache average time is: " << time_total_cache / chunk_num << std::endl;
     }
 }
 
@@ -181,6 +182,7 @@ int dedup::file_reader(char *path) {
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    double end_cache_t = 0.0;
     char blk_num_str[30];
     std::string mid_str;
 
@@ -234,15 +236,17 @@ int dedup::file_reader(char *path) {
         /////////////////////////////////////////////////////////////
         stat_t = ti.get_time();
         cache_flag = dedup_cache(bch_result, (char *)chk_cont, bloom_flag);
+        end_cache_t = ti.get_time();
+        time_total_cache += (end_cache_t - stat_t) * 1000;
         mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
-        end_t = ti.get_time();
+        //end_t = ti.get_time();
         if(mt_flag == 2){
             chunk_not_dup++;
             write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
             //ti.cp_all(0.2, 0);
-            time_total += 0.2;
+        //    time_total += 0.2;
         }
-
+        end_t = ti.get_time();
 
         //ti.cp_all((end_t - stat_t) * 1000, 1);
         time_total += (end_t - stat_t) * 1000;
