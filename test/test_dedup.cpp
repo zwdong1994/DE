@@ -17,9 +17,10 @@ void random_string(char str[], int length){
 
 int main(int argc, char **argv){
     char path[256];
+    char devname[30];
     dedup ded;
     strcpy(path, argv[1]);
-
+    strcpy(devname, argv[2]);
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -30,6 +31,6 @@ int main(int argc, char **argv){
 /////////////////////////////////////////////////////////////////////////////
 ///                              test dedup                               ///
 /////////////////////////////////////////////////////////////////////////////
-    ded.dedup_func(path);
+    ded.dedup_func(path, devname);
     return 0;
 }

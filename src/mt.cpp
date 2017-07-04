@@ -17,7 +17,7 @@ static char *dev_name;
 static int mt_fd;
 static struct aiocb64 myaio;
 
-mt::mt() {
+mt::mt(char *devname) {
     bzero((char *)&myaio, sizeof(struct aiocb64));
     myaio.aio_buf = malloc(4097);
     if(!myaio.aio_buf)
@@ -28,7 +28,7 @@ mt::mt() {
     max_size_addr = ssd_capacity * 1024 * 1024 / 4;
     alloc_addr_point = 1;
     dev_name = new char[30];
-    strcpy(dev_name, "/dev/nvme0n1p1");
+    strcpy(dev_name, devname);
     mt_fd = open(dev_name, O_RDWR|O_LARGEFILE);
     if(mt_fd == -1){
         std::cout<<"open "<< dev_name <<" error!"<<std::endl;
@@ -43,12 +43,14 @@ mt::~mt() {
 
 mt* mt::mt_instance = NULL;
 
-mt* mt::Get_mt(){
+mt* mt::Get_mt(char *devname){
     static pthread_mutex_t mu = PTHREAD_MUTEX_INITIALIZER;
     if(mt_instance == NULL){
         pthread_mutex_lock(&mu);
-        if(mt_instance == NULL)
-            mt_instance = new mt();
+        if(mt_instance == NULL) {
+            mt_instance = new mt(devname);
+            strcpy(dev_name, devname);
+        }
         pthread_mutex_unlock(&mu);
     }
     return mt_instance;

@@ -30,13 +30,14 @@ public:
     ~dedup();
 
     void travel_dir(char path[]);
-    int dedup_func(char path[]);
+    int dedup_func(char path[], char dev[]);
     int file_reader(char *c_path);
     int dedup_process(char bch_result[], char *chk_cont, int bch_length);
     uint64_t chunk_num;
     double time_total;
     double time_aver;
     double time_total_read;
+    double time_total_cache;
     uint64_t chunk_not_dup;
     uint64_t read_number;
 

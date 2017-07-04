@@ -35,6 +35,7 @@ dedup::dedup() {
     time_total = 0.0;
     time_aver = 0.0;
     time_total_read = 0.0;
+    time_total_cache = 0.0;
     chunk_not_dup = 0;
     block_id = 0;
     head_10000_time = 0.0;
@@ -45,7 +46,7 @@ dedup::dedup() {
 
     fade_crash_number = 0;
     crash_number = 0;
-    mp = mt::Get_mt();
+
     cac = new_cache::Get_cache();
     blf = bloom::Get_bloom();
     cra_t = NULL;
@@ -96,8 +97,8 @@ dedup::~dedup() {
     }
 }
 
-int dedup::dedup_func(char *path) {
-
+int dedup::dedup_func(char *path, char *dev) {
+    mp = mt::Get_mt(dev);
     travel_dir(path);
 
     return 0;

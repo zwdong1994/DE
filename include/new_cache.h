@@ -44,8 +44,8 @@ private:
 public:
     static new_cache *Get_cache();
     static new_cache *cache_instance;
-    int cache_find(std::string code, char chunk_reference[]);//0 represent cache miss, 1 means hit, 2 means ecc crash
-    int cache_insert(std::string code, char chunk_reference[]); //add new member of ecc and resort the cache
+    int cache_find(std::string &code, char chunk_reference[]);//0 represent cache miss, 1 means hit, 2 means ecc crash
+    int cache_insert(std::string &code, char chunk_reference[]); //add new member of ecc and resort the cache
     int cache_update(rb_structure *rbs);
 };
 

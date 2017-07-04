@@ -28,7 +28,7 @@ int main(){
     int exist = 0;
     int not_exist = 0;
 //    int crash = 0;
-    mt *mt_index = mt::Get_mt();
+    mt *mt_index = mt::Get_mt("/dev/sdb1");
     int i;
     for(i = 0; i < 1000; i++){
         block[i] = new char[4097];

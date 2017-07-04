@@ -29,7 +29,7 @@ new_cache *new_cache::Get_cache() {
     return cache_instance;
 }
 
-int new_cache::cache_find(std::string code, char chunk_reference[]) {
+int new_cache::cache_find(std::string &code, char chunk_reference[]) {
     rb_structure *get_container = chunk_container[code];
     if(get_container != NULL && get_container -> flag == 1){ //ecc exist
         if(memcmp(chunk_reference, get_container -> chunk, CHUNK_SIZE) == 0 ){//chunk exist
@@ -57,7 +57,7 @@ int new_cache::cache_find(std::string code, char chunk_reference[]) {
     }
 }
 
-int new_cache::cache_insert(std::string code, char chunk_reference[]) {
+int new_cache::cache_insert(std::string &code, char chunk_reference[]) {
     rb_structure *add_container = malloc_rbs();
     memcpy(add_container -> chunk, chunk_reference, CHUNK_SIZE);
     chunk_container[code] = add_container;
@@ -80,7 +80,7 @@ int new_cache::cache_insert(std::string code, char chunk_reference[]) {
             head_cache -> prev = add_container;
             tail_cache = head_cache;
             head_cache = add_container;
-            cache_size++;
+            ++cache_size;
             return 1;
         }
         else if( cache_size == MAX_CACHE_SIZE) {
@@ -113,7 +113,7 @@ int new_cache::cache_insert(std::string code, char chunk_reference[]) {
             head_cache -> prev = add_container;
             add_container -> prev = tail_cache;
             head_cache = add_container;
-            cache_size++;
+            ++cache_size;
             return 1;
         }
     }
@@ -121,6 +121,7 @@ int new_cache::cache_insert(std::string code, char chunk_reference[]) {
 
 int new_cache::cache_update(rb_structure *rbs) {
     rb_structure *mid_rbs = NULL;
+    mid_rbs = rbs;
     if(cache_size == 1)
         return 1;
     else if(cache_size == 2){
@@ -134,8 +135,8 @@ int new_cache::cache_update(rb_structure *rbs) {
         }
     }
     else{
-        mid_rbs -> prev -> next = mid_rbs -> next;
-        mid_rbs -> next -> prev = mid_rbs -> prev;
+        rbs -> prev -> next = mid_rbs -> next;
+        rbs -> next -> prev = mid_rbs -> prev;
         head_cache -> prev = rbs;
         rbs -> next = head_cache;
         tail_cache -> next = rbs;
@@ -177,7 +178,7 @@ void new_cache::ini_pool() {
     allocate_pool_head = NULL;
     delete_pool_head = NULL;
 
-    for(; i < MAX_CACHE_SIZE + 100; i++){
+    for(; i < MAX_CACHE_SIZE + 100; ++i){
         new_alloc = new rb_structure;
         new_alloc -> next = allocate_pool_head;
         new_alloc -> flag = 0;
