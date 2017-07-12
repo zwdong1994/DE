@@ -18,6 +18,7 @@
 #define CONFIG_M 8
 #define CONFIG_T 13
 #define CODE_LENGTH 16
+#define SHA256_CODE_LENGTH 32
 
 struct crash_test{
     char reference1[READ_LENGTH];
@@ -30,14 +31,22 @@ public:
     ~dedup();
 
     void travel_dir(char path[]);
-    int dedup_func(char path[], char dev[]);
-    int file_reader(char *c_path);
+    void travel_dir_nonewcache(char path[]);
+    int dedup_func(char path[], char dev[], int mode, int cache_mode);
+    int file_reader(char *path);
+    int file_reader_nonewcache(char *path);
+    int md5_file_reader(char *c_path);
+    int md5_file_reader_nonewcache(char *c_path);
+    int sha256_file_reader(char *c_path);
+    int sha256_file_reader_nonewcache(char *c_path);
     int dedup_process(char bch_result[], char *chk_cont, int bch_length);
     uint64_t chunk_num;
     double time_total;
     double time_aver;
     double time_total_read;
     double time_total_cache;
+    double time_total_xr;
+    double hash_time;
     uint64_t chunk_not_dup;
     uint64_t read_number;
 
@@ -56,6 +65,7 @@ private:
     int dedup_bloom(char bch_result[], int bch_length);
     int dedup_cache(std::string bch_result, char *chk_cont, int bloom_flag);
     int dedup_mt(char bch_result[], char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag);
+    int dedup_noread_mt(char bch_result[], char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag);
     int test_crash(char *reference1, char *reference2);
     int test_all_crash();
     int crash_number;
@@ -65,6 +75,8 @@ private:
     double head_10000_time;
 
     int file_number;
+
+
 
     para *head_pthread_para;
 

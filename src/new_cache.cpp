@@ -146,7 +146,7 @@ int new_cache::cache_update(rb_structure *rbs) {
     }
 }
 
-int new_cache::free_rbs(rb_structure *f_rbs) {
+inline int new_cache::free_rbs(rb_structure *f_rbs) {
     f_rbs -> next = delete_pool_head;
     f_rbs -> flag = 0;
     delete_pool_head = f_rbs;

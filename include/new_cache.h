@@ -8,7 +8,7 @@
 #include <iostream>
 #include <map>
 #include <string.h>
-#define MAX_CACHE_SIZE 10000
+#define MAX_CACHE_SIZE 100000
 #define CHUNK_SIZE 4096
 
 typedef struct code_chunk{
@@ -36,12 +36,13 @@ private:
     void ini_pool();
     void destory_pool();
     rb_structure* malloc_rbs();
-    int free_rbs(rb_structure *f_rbs);
+    inline int free_rbs(rb_structure *f_rbs);
 
     int cache_size;
-    std::map<std::string, struct code_chunk *> chunk_container; //save(ECC or hash code, Chunk_reference)
+
 
 public:
+    std::map<std::string, struct code_chunk *> chunk_container; //save(ECC or hash code, Chunk_reference)
     static new_cache *Get_cache();
     static new_cache *cache_instance;
     int cache_find(std::string &code, char chunk_reference[]);//0 represent cache miss, 1 means hit, 2 means ecc crash

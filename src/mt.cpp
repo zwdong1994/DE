@@ -24,7 +24,7 @@ mt::mt(char *devname) {
         perror("malloc\n");
     write_time = 0;
     time_total = 0.0;
-    ssd_capacity = 100;
+    ssd_capacity = 300;
     max_size_addr = ssd_capacity * 1024 * 1024 / 4;
     alloc_addr_point = 1;
     dev_name = new char[30];
