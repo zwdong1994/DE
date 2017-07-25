@@ -11,7 +11,7 @@
 #include "mt.h"
 #include "bch.h"
 #include "bloom_func.h"
-#include "cache.h"
+//#include "cache.h"
 #include "new_cache.h"
 
 #define READ_LENGTH 4096
@@ -19,6 +19,7 @@
 #define CONFIG_T 13
 #define CODE_LENGTH 16
 #define SHA256_CODE_LENGTH 32
+#define SHA1_CODE_LENGTH 20
 
 struct crash_test{
     char reference1[READ_LENGTH];
@@ -39,7 +40,9 @@ public:
     int md5_file_reader_nonewcache(char *c_path);
     int sha256_file_reader(char *c_path);
     int sha256_file_reader_nonewcache(char *c_path);
-    int dedup_process(char bch_result[], char *chk_cont, int bch_length);
+    int sha1_file_reader(char *c_path);
+    int sha1_file_reader_nonewcache(char *c_path);
+    //int dedup_process(char bch_result[], char *chk_cont, int bch_length);
     uint64_t chunk_num;
     double time_total;
     double time_aver;
@@ -72,6 +75,7 @@ private:
     int fade_crash_number;
     struct crash_test *cra_t;
     uint64_t block_id;
+    uint64_t cache_hit_num;
     double head_10000_time;
 
     int file_number;

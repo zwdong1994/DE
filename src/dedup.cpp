@@ -45,6 +45,7 @@ dedup::dedup() {
 
     code_mode = 0;
     cache_mode = 0;
+    cache_hit_num = 0;
 
     file_number = 0;
 
@@ -98,6 +99,10 @@ dedup::~dedup() {
 //        std::cout<< "write average time is: " << mp->time_total / mp->write_time << std::endl;
         std::cout << "The total time is " << time_total <<"ms"<< std::endl;
         std::cout << "The chunk number is " << chunk_num << std::endl;
+        if(cache_hit_num > 0){
+            std::cout << "Cache hit number is: " << cache_hit_num << std::endl;
+            std::cout << "Cache hit rate is: " << 100 * cache_hit_num / chunk_num << "%" <<std::endl;
+        }
         if(chunk_not_dup > 0){
             std::cout << "The dedupe rate is " <<  (chunk_num - chunk_not_dup) * 100.0 / chunk_num <<"%"<<std::endl;
             std::cout << "The not dedupe chunk number is " << chunk_not_dup << std::endl;
@@ -115,12 +120,13 @@ dedup::~dedup() {
             std::cout << "Read average time is: " << time_total_read / read_number << std::endl;
             std::cout << "Read + XOR average time is: " << time_total_xr / read_number << std::endl;
         }
+
     }
 }
 
 int dedup::dedup_func(char *path, char *dev, int mode, int cac_mode) {
     mp = mt::Get_mt(dev);
-    if(mode >= 0 && mode <=2)
+    if(mode >= 0 && mode <=3)
         code_mode = mode;
     else{
         std::cout<< "There are nothing to do with the mode that you input!" << std::endl;
@@ -168,9 +174,10 @@ void dedup::travel_dir_nonewcache(char *path) {
                 file_reader_nonewcache(child_path);
             else if(code_mode == 1)
                 md5_file_reader_nonewcache(child_path);
-            else
+            else if(code_mode == 2)
                 sha256_file_reader_nonewcache(child_path);
-
+            else
+                sha1_file_reader_nonewcache(child_path);
         }
     }
 }
@@ -228,7 +235,9 @@ int dedup::file_reader_nonewcache(char *path) {
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
         /////////////////////////////////////////////////////////////
 
-        cache_flag = dedup_cache(mid_str, (char *)chk_cont, bloom_flag);
+        //cache_flag = dedup_cache(mid_str, (char *)chk_cont, bloom_flag);
+        if(cache_flag == 1)
+            cache_hit_num++;
         stat_t = ti.get_time();
         mt_flag = dedup_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
 
@@ -239,7 +248,7 @@ int dedup::file_reader_nonewcache(char *path) {
             //time_total += 0.2;
         }
         end_t = ti.get_time();
-        time_total += 0.0005;
+        //time_total += 0.0005;
         //ti.cp_all((end_t - stat_t) * 1000, 1);
         time_total += (end_t - stat_t) * 1000;
 //        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
@@ -401,6 +410,81 @@ int dedup::sha256_file_reader_nonewcache(char *path) {
     return 0;
 }
 
+int dedup::sha1_file_reader_nonewcache(char *path) {
+    uint8_t hv[SHA1_CODE_LENGTH + 1];
+    char bch_result[2 * SHA1_CODE_LENGTH + 1];
+    FILE *fp = NULL;
+    uint8_t chk_cont[4097];
+    int bloom_flag = 0;
+    int cache_flag = 0;
+    int mt_flag = 0;
+    double stat_t = 0.0;
+    double end_t = 0.0;
+    char blk_num_str[30];
+    cp_t ti;
+
+    if((fp = fopen(path, "r")) == NULL){
+        std::cout<<"Open file error!The file name is: "<<path<<std::endl;
+        return 0;
+    }
+    while(1){
+        memset(chk_cont, 0, READ_LENGTH);
+        if(fread(chk_cont, sizeof(char), READ_LENGTH, fp) == 0)
+            break;
+        chunk_num++;
+        block_id ++;
+        if(block_id % 10000 == 0){
+            sprintf(blk_num_str, "%ld-%ld", block_id - 10000, block_id - 1);
+            std::cout.setf(std::ios::fixed);
+            std::cout<<std::left<<std::setw(30)<< blk_num_str
+                     <<std::left<<std::setw(30)<< (time_total - head_10000_time) / 10000
+                     <<std::left<<std::setw(30)<< (chunk_num - chunk_not_dup) * 100.0 / chunk_num
+                     <<std::left<<std::setw(30)<< time_total / chunk_num
+                     <<std::left<<std::setw(30)<< time_total / 1000 <<std::endl;
+            head_10000_time = time_total;
+        }
+        memset(hv, 0, SHA1_CODE_LENGTH + 1);
+        memset(bch_result, 0, 2 * SHA1_CODE_LENGTH + 1);
+//        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+        stat_t = ti.get_time();
+        //MD5((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
+        SHA256((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
+        end_t = ti.get_time();
+        //ti.cp_all((end_t - stat_t) * 1000, 0);
+        time_total += (end_t - stat_t) * 1000;
+        hash_time += (end_t - stat_t) * 1000;
+        /////////////////////////////////////////////////////////////
+        ByteToHexStr(hv, bch_result, SHA1_CODE_LENGTH);
+        bloom_flag = dedup_bloom(bch_result, 2 * SHA1_CODE_LENGTH);
+        /////////////////////////////////////////////////////////////
+        stat_t = ti.get_time();
+//        cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
+        mt_flag = dedup_noread_mt(bch_result, (char *)chk_cont, 2 * SHA1_CODE_LENGTH, cache_flag, bloom_flag);
+
+        if(mt_flag == 2){
+            chunk_not_dup++;
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            //ti.cp_all(0.2, 0);
+            //time_total += 0.2;
+        }
+        end_t = ti.get_time();
+
+        //ti.cp_all((end_t - stat_t) * 1000, 1);
+//        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
+        time_total += (end_t - stat_t) * 1000;
+
+    }
+    //ti.cp_aver(path);
+
+    fclose(fp);
+    return 0;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 void dedup::travel_dir(char *path) {
     DIR *pdir;
@@ -468,8 +552,10 @@ void *dedup::start_pthread(void *arg) {
         mid -> this_ ->file_reader(mid -> path);
     else if(code_mode == 1)
         mid -> this_ ->md5_file_reader(mid -> path);
-    else
+    else if(code_mode == 2)
         mid -> this_ ->sha256_file_reader(mid -> path);
+    else
+        mid -> this_ -> sha1_file_reader(mid -> path);
     return nullptr;
 }
 
@@ -537,7 +623,9 @@ int dedup::file_reader(char *path) {
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
         /////////////////////////////////////////////////////////////
 
-        cache_flag = dedup_cache(mid_str, (char *)chk_cont, bloom_flag);
+        //cache_flag = dedup_cache(mid_str, (char *)chk_cont, bloom_flag);
+        if(cache_flag == 1)
+            cache_hit_num++;
         //end_cache_t = ti.get_time();
         //time_total_cache += (end_cache_t - stat_t) * 1000;
         stat_t = ti.get_time();
@@ -843,7 +931,128 @@ int dedup::sha256_file_reader(char *path){
 }
 
 
+int dedup::sha1_file_reader(char *path){
+    uint8_t hv[SHA1_CODE_LENGTH + 1];
+    char bch_result[2 * SHA1_CODE_LENGTH + 1];
 
+    FILE *fp = NULL;
+    uint8_t chk_cont[4097];
+    int bloom_flag = 0;
+    int cache_flag = 0;
+    int mt_flag = 0;
+    double stat_t = 0.0;
+    double end_t = 0.0;
+    double end_cache_t = 0.0;
+    char blk_num_str[30];
+    std::string mid_str;
+
+//    std::cout<< path << std::endl;
+    if((fp = fopen(path, "r")) == NULL){
+        std::cout<<"Open file error!The file name is: "<<path<<std::endl;
+        return 0;
+    }
+//    pthread_mutex_unlock(&mutex_start_pthread);
+//    std::cout<< path << std::endl;
+    while(1){
+        pthread_mutex_lock(&mutex_filereader);
+        memset(chk_cont, 0, READ_LENGTH);
+        //pthread_mutex_lock
+
+        if(fread(chk_cont, sizeof(char), READ_LENGTH, fp) == 0){
+            pthread_mutex_unlock(&mutex_filereader);
+//            std::cout<< path << std::endl;
+            break;
+        }
+
+        chunk_num++;
+        block_id ++;
+        if(block_id % 10000 == 0){
+            sprintf(blk_num_str, "%ld-%ld", block_id - 10000, block_id - 1);
+            std::cout.setf(std::ios::fixed);
+            std::cout<<std::left<<std::setw(30)<< blk_num_str
+                     <<std::left<<std::setw(30)<< (time_total - head_10000_time) / 10000
+                     <<std::left<<std::setw(30)<< (chunk_num - chunk_not_dup) * 100.0 / chunk_num
+                     <<std::left<<std::setw(30)<< time_total / chunk_num
+                     <<std::left<<std::setw(30)<< time_total / 1000 <<std::endl;
+            head_10000_time = time_total;
+        }
+        memset(hv, 0, SHA1_CODE_LENGTH + 1);
+        memset(bch_result, 0, 2 * SHA1_CODE_LENGTH + 1);
+        //encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+        stat_t = ti.get_time();
+        //MD5((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
+        SHA1((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
+        end_t = ti.get_time();
+        //ti.cp_all((end_t - stat_t) * 1000, 0);
+        time_total += (end_t - stat_t) * 1000;
+        hash_time += (end_t - stat_t) * 1000;
+        /////////////////////////////////////////////////////////////
+        ByteToHexStr(hv, bch_result, SHA1_CODE_LENGTH);
+        mid_str = bch_result;
+        bloom_flag = dedup_bloom(bch_result, 2 * SHA256_CODE_LENGTH);
+        /////////////////////////////////////////////////////////////
+        stat_t = ti.get_time();
+        //cache_flag = dedup_cache(bch_result, (char *)chk_cont, bloom_flag);
+        //end_cache_t = ti.get_time();
+        //time_total_cache += (end_cache_t - stat_t) * 1000;
+        mt_flag = dedup_noread_mt(bch_result, (char *)chk_cont, 2 * SHA1_CODE_LENGTH, cache_flag, bloom_flag);
+        //end_t = ti.get_time();
+        if(mt_flag == 2){
+            chunk_not_dup++;
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            //ti.cp_all(0.2, 0);
+            //    time_total += 0.2;
+        }
+        end_t = ti.get_time();
+
+        //ti.cp_all((end_t - stat_t) * 1000, 1);
+        time_total += (end_t - stat_t) * 1000;
+//        dedup_process(bch_result, (char *)chk_cont, 2 * CODE_LENGTH);
+
+        //pthread_mutex_unlock
+        pthread_mutex_unlock(&mutex_filereader);
+
+    }
+    //ti.cp_aver(path);
+    //time_total += ti.time_total;
+    fclose(fp);
+//   std::cout<< path << std::endl;
+//    std::cout<< file_number << std::endl;
+    pthread_mutex_lock(&mutex_file_num);
+    file_number --;
+    pthread_mutex_unlock(&mutex_num_control);
+//    std::cout<< "Between mutex file number " <<file_number << std::endl;
+
+    pthread_mutex_unlock(&mutex_file_num);
+
+/*    pthread_mutex_lock(&mutex_delete_pthread);
+    para *p = head_pthread_para -> next, *hp = head_pthread_para;
+    if(strcmp(head_pthread_para -> path, path) == 0){
+        head_pthread_para = p -> next;
+        delete p;
+        pthread_mutex_unlock(&mutex_delete_pthread);
+        return 0;
+    }
+    while(p != NULL){
+        if(strcmp(p -> path, path) == 0){
+            hp -> next = p -> next;
+            delete p;
+            pthread_mutex_unlock(&mutex_delete_pthread);
+            return 0;
+        }
+        hp = p;
+        p = p -> next;
+    }
+    pthread_mutex_unlock(&mutex_delete_pthread);*/
+
+    return 0;
+}
 
 
 void dedup::ByteToHexStr(const unsigned char *source, char *dest, int sourceLen) {
@@ -871,7 +1080,7 @@ void dedup::ByteToHexStr(const unsigned char *source, char *dest, int sourceLen)
     return ;
 }
 
-int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
+/*int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
     bloom *blf = bloom::Get_bloom();
     std::string str;
     cache *cac = cache::Get_cache();
@@ -932,7 +1141,7 @@ int dedup::dedup_process(char *bch_result, char *chk_cont, int bch_lengh) {
             return 0;
     }
     return 0;
-}
+}*/
 
 int dedup::dedup_bloom(char *bch_result, int bch_length) {
 
@@ -1004,8 +1213,8 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
             else{ //ecc exist, so we need read the block from ssd
                 stat_xr_t = ti.get_time();
                 while(head_addr != NULL){
-                    memset(read_buf, 0, READ_LENGTH+1);
-                    read_number ++;
+                    //memset(read_buf, 0, READ_LENGTH+1);
+                    ++read_number ;
                     stat_t = ti.get_time();
                     read_block(head_addr, read_buf);
                     end_t = ti.get_time();

@@ -190,6 +190,38 @@ int main(void){
     not_exist = 0;
     exist = 0;
     crash = 0;
+
+/////////////////////////////////////////////////////////////////////////////
+///                              test new cache find                      ///
+/////////////////////////////////////////////////////////////////////////////
+    time_total = 0.0;
+    rb_structure *midrb;
+    for(i = 0; i < 20000; i++){
+        mid_str = block[i];
+        stat_time = get_time();
+        midrb = new_cac -> chunk_container[mid_str];
+        end_time = get_time();
+        time_total += (end_time - stat_time) * 1000;
+        /*if( flag == 1){
+            exist++;
+        }
+        else if( flag == 2){
+            crash++;
+        }
+        else {
+            not_exist++;
+
+        }*/
+    }
+    //std::cout<< "exist: " << exist << std::endl
+    //         << "crash: " << crash << std::endl
+    //         << "not exist: " << not_exist << std::endl;
+    std::cout << "New cache find chunk container average time is : " << time_total / 20000 << std::endl;
+
+    not_exist = 0;
+    exist = 0;
+    crash = 0;
+
 /////////////////////////////////////////////////////////////////////////////
 ///                              test old cache find                      ///
 /////////////////////////////////////////////////////////////////////////////

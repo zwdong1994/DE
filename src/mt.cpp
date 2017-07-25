@@ -38,6 +38,16 @@ mt::mt(char *devname) {
 
 mt::~mt() {
 //    std::cout<< "write average time is: " << time_total / write_time << std::endl;
+    std::map<std::string, struct addr*>::iterator it;
+    struct addr *p = NULL, *dp = NULL;
+    for(it = mt_container.begin(); it != mt_container.end(); ++it){
+        p = it -> second;
+        while(p != NULL){
+            dp = p;
+            p = p -> next;
+            delete dp;
+        }
+    }
     close(mt_fd);
 }
 

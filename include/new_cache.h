@@ -8,7 +8,7 @@
 #include <iostream>
 #include <map>
 #include <string.h>
-#define MAX_CACHE_SIZE 10000
+#define MAX_CACHE_SIZE 50000
 #define CHUNK_SIZE 4096
 
 typedef struct code_chunk{

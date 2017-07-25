@@ -18,9 +18,13 @@ void random_string(char str[], int length){
 int main(int argc, char **argv){
     char path[256];
     char devname[30];
+    int mode = 0;
+    int cache_mode = 0;
     dedup ded;
     strcpy(path, argv[1]);
     strcpy(devname, argv[2]);
+    mode = atoi(argv[3]);
+    cache_mode = atoi(argv[4]);
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -31,6 +35,6 @@ int main(int argc, char **argv){
 /////////////////////////////////////////////////////////////////////////////
 ///                              test dedup                               ///
 /////////////////////////////////////////////////////////////////////////////
-    ded.dedup_func(path, devname);
+    ded.dedup_func(path, devname, mode, cache_mode);
     return 0;
 }
