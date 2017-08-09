@@ -36,6 +36,7 @@ dedup::dedup() {
     time_total = 0.0;
     time_aver = 0.0;
     time_total_read = 0.0;
+    time_total_write = 0.0;
     time_total_cache = 0.0;
     time_total_xr = 0.0;
     hash_time = 0.0;
@@ -75,14 +76,17 @@ dedup::dedup() {
 
 dedup::~dedup() {
     std::string test_title;
+    std::string test_title_on = "";
     if(code_mode ==0)
         test_title = "The DE scheme with new divide performance";
     else if(code_mode == 1)
         test_title = "The md5 scheme's performance";
-    else
+    else if(code_mode == 2)
         test_title = "The sha256 scheme's performance";
+    else
+        test_title = "The sha1 scheme's performance";
     if(cache_mode == 1)
-        test_title = "The DE scheme with old divide performance";
+        test_title_on = "The scheme with old divide performance. ";
     para *p = head_pthread_para, *hp = NULL;
     while(p != NULL){
         pthread_join(p -> pid, NULL);
@@ -94,7 +98,7 @@ dedup::~dedup() {
 
     if(time_total > 0) {
         time_aver = time_total / chunk_num;
-        std::cout <<std::endl<< "**************************"<< test_title << "***********************" <<std::endl;
+        std::cout <<std::endl<< "**************************"<< test_title_on << test_title << "***********************" <<std::endl;
 //        mt *mp = mt::Get_mt();
 //        std::cout<< "write average time is: " << mp->time_total / mp->write_time << std::endl;
         std::cout << "The total time is " << time_total <<"ms"<< std::endl;
@@ -120,7 +124,7 @@ dedup::~dedup() {
             std::cout << "Read average time is: " << time_total_read / read_number << std::endl;
             std::cout << "Read + XOR average time is: " << time_total_xr / read_number << std::endl;
         }
-
+        std::cout << "Write average time is: " << time_total_write / chunk_not_dup << std::endl;
     }
 }
 
@@ -192,6 +196,7 @@ int dedup::file_reader_nonewcache(char *path) {
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    double write_elps = 0.0;
     char blk_num_str[30];
     std::string mid_str;
     cp_t ti;
@@ -243,7 +248,8 @@ int dedup::file_reader_nonewcache(char *path) {
 
         if(mt_flag == 2){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
         }
@@ -271,6 +277,7 @@ int dedup::md5_file_reader_nonewcache(char *path) {
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    double write_elps = 0.0;
     char blk_num_str[30];
     cp_t ti;
 
@@ -318,7 +325,8 @@ int dedup::md5_file_reader_nonewcache(char *path) {
 
         if(mt_flag == 2){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
         }
@@ -345,6 +353,7 @@ int dedup::sha256_file_reader_nonewcache(char *path) {
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    double write_elps = 0.0;
     char blk_num_str[30];
     cp_t ti;
 
@@ -393,7 +402,8 @@ int dedup::sha256_file_reader_nonewcache(char *path) {
 
         if(mt_flag == 2){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
         }
@@ -420,9 +430,9 @@ int dedup::sha1_file_reader_nonewcache(char *path) {
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    double write_elps = 0.0;
     char blk_num_str[30];
     cp_t ti;
-
     if((fp = fopen(path, "r")) == NULL){
         std::cout<<"Open file error!The file name is: "<<path<<std::endl;
         return 0;
@@ -468,7 +478,8 @@ int dedup::sha1_file_reader_nonewcache(char *path) {
 
         if(mt_flag == 2){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
         }
@@ -518,7 +529,7 @@ void dedup::travel_dir(char *path) {
             memcpy(file_para->path, child_path, sizeof(child_path));
 
             file_para->this_ = this;
-            if(file_number >= 5){
+            if(file_number >= PTHREAD_NUM - 1){
                 pthread_mutex_lock(&mutex_num_control);
 //                std::cout<< "In the if " <<file_number << std::endl;
 
@@ -570,6 +581,7 @@ int dedup::file_reader(char *path) {
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    double write_elps = 0.0;
     double end_cache_t = 0.0;
     char blk_num_str[30];
     std::string mid_str;
@@ -633,7 +645,8 @@ int dedup::file_reader(char *path) {
         //end_t = ti.get_time();
         if(mt_flag == 2){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
         }
@@ -695,6 +708,7 @@ int dedup::md5_file_reader(char *path){
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    double write_elps = 0.0;
     double end_cache_t = 0.0;
     char blk_num_str[30];
     std::string mid_str;
@@ -756,7 +770,8 @@ int dedup::md5_file_reader(char *path){
         //end_t = ti.get_time();
         if(mt_flag == 2){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //    time_total += 0.2;
         }
@@ -818,6 +833,7 @@ int dedup::sha256_file_reader(char *path){
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    double write_elps = 0.0;
     double end_cache_t = 0.0;
     char blk_num_str[30];
     std::string mid_str;
@@ -881,7 +897,8 @@ int dedup::sha256_file_reader(char *path){
         //end_t = ti.get_time();
         if(mt_flag == 2){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //    time_total += 0.2;
         }
@@ -942,6 +959,7 @@ int dedup::sha1_file_reader(char *path){
     int mt_flag = 0;
     double stat_t = 0.0;
     double end_t = 0.0;
+    double write_elps = 0.0;
     double end_cache_t = 0.0;
     char blk_num_str[30];
     std::string mid_str;
@@ -995,7 +1013,7 @@ int dedup::sha1_file_reader(char *path){
         /////////////////////////////////////////////////////////////
         ByteToHexStr(hv, bch_result, SHA1_CODE_LENGTH);
         mid_str = bch_result;
-        bloom_flag = dedup_bloom(bch_result, 2 * SHA256_CODE_LENGTH);
+        bloom_flag = dedup_bloom(bch_result, 2 * SHA1_CODE_LENGTH);
         /////////////////////////////////////////////////////////////
         stat_t = ti.get_time();
         //cache_flag = dedup_cache(bch_result, (char *)chk_cont, bloom_flag);
@@ -1005,7 +1023,8 @@ int dedup::sha1_file_reader(char *path){
         //end_t = ti.get_time();
         if(mt_flag == 2){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont);
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //    time_total += 0.2;
         }

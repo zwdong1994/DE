@@ -16,7 +16,7 @@ struct addr{
     struct addr *next;
 };
 
-int write_block(unsigned long offset, char chunk_reference[]);
+int write_block(unsigned long offset, char chunk_reference[], double &elpstime);
 int read_block(struct addr *write_addr, char chunk_reference[]);
 
 class mt{

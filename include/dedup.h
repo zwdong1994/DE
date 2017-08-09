@@ -15,6 +15,7 @@
 #include "new_cache.h"
 
 #define READ_LENGTH 4096
+#define PTHREAD_NUM 6
 #define CONFIG_M 8
 #define CONFIG_T 13
 #define CODE_LENGTH 16
@@ -47,6 +48,7 @@ public:
     double time_total;
     double time_aver;
     double time_total_read;
+    double time_total_write;
     double time_total_cache;
     double time_total_xr;
     double hash_time;

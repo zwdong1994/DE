@@ -16,6 +16,7 @@ static struct aiocb64 aio;
 static char *dev_name;
 static int mt_fd;
 static struct aiocb64 myaio;
+cp_t ti;
 
 mt::mt(char *devname) {
     bzero((char *)&myaio, sizeof(struct aiocb64));
@@ -105,11 +106,11 @@ int mt::insert_mt(char *ecc_code, char chunk_reference[], int length_ecc) {
     return 0;
 }
 
-int write_block(unsigned long offset, char *chunk_reference) {
+int write_block(unsigned long offset, char *chunk_reference, double &elpstime) {
 
-//    double stat_t = 0.0, end_t = 0.0;
+    double stat_t = 0.0, end_t = 0.0;
 //    std::cout << "11" << std::endl;
-//    cp_t ti;
+
 
 //    std::cout << "11" << std::endl;
 //    struct aiocb64 *cblist[1];
@@ -121,15 +122,15 @@ int write_block(unsigned long offset, char *chunk_reference) {
     aio.aio_nbytes = BLOCK_SIZE;
     aio.aio_offset = offset * BLOCK_SIZE;
     memcpy((void *)aio.aio_buf, (void *)chunk_reference, BLOCK_SIZE);
-//    stat_t = ti.get_time();
+    stat_t = ti.get_time();
 //    cblist[0] = &aio;
 //    std::cout << "11" << std::endl;
     aio_write64(&aio);
 //    aio_suspend64(cblist, 1, NULL);
     while(EINPROGRESS == aio_error64(&aio));
 //    std::cout << "11" << std::endl;
-//    end_t = ti.get_time();
-
+    end_t = ti.get_time();
+    elpstime = (end_t - stat_t) * 1000;
 //    std::cout<< "write average time is: " << (end_t - stat_t) * 1000 << std::endl;
 //    time_total += ((end_t - stat_t) * 1000);
 //    write_time++;
