@@ -64,6 +64,7 @@ private:
         struct mid_para *next;
     }para;
     cp_t ti;
+    unsigned long time_collect_num[100]; //this array record the number of average time in every 0.001ms(0.001ms - 0.1ms -......)
     static void *start_pthread(void *arg);
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
     struct bch_control *bch;
