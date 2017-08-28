@@ -34,7 +34,7 @@ public:
 
     void travel_dir(char path[]);
     void travel_dir_nonewcache(char path[]);
-    int dedup_func(char path[], char dev[], int mode, int cache_mode);
+    int dedup_func(char path[], char dev[], int mode, int cache_mode, int cache_flag, int cache_size);
     int file_reader(char *path);
     int file_reader_nonewcache(char *path);
     int md5_file_reader(char *c_path);
@@ -54,6 +54,7 @@ public:
     double hash_time;
     uint64_t chunk_not_dup;
     uint64_t read_number;
+    uint64_t read_10000_num;
 
 private:
 
@@ -64,9 +65,12 @@ private:
         struct mid_para *next;
     }para;
     cp_t ti;
-    unsigned long time_collect_num[100]; //this array record the number of average time in every 0.001ms(0.001ms - 0.1ms -......)
+    uint64_t time_collect_num[1000]; //this array record the number of average time in every 0.001ms(0.001ms - 0.1ms -......)
+    uint64_t time_collect_num_less[1000]; //this array record the number of average time in every 0.001ms(0.001ms - 0.1ms -......)
     static void *start_pthread(void *arg);
     void ByteToHexStr(const unsigned char* source, char* dest, int sourceLen);
+    int avertime_distribute(double &elpstime);
+    int avertime_distribute_less(double &elpstime);
     struct bch_control *bch;
     int dedup_bloom(char bch_result[], int bch_length);
     int dedup_cache(std::string bch_result, char *chk_cont, int bloom_flag);
@@ -76,10 +80,12 @@ private:
     int test_all_crash();
     int crash_number;
     int fade_crash_number;
+    int is_cache;
     struct crash_test *cra_t;
     uint64_t block_id;
     uint64_t cache_hit_num;
     double head_10000_time;
+    double mid_elpstime;
 
     int file_number;
 

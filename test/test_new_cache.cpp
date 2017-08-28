@@ -35,7 +35,7 @@ int main(void){
     double time_total = 0.0, stat_time = 0.0, end_time = 0.0;
     std::string mid_str;
     cache *cac = cache::Get_cache();
-    new_cache *new_cac = new_cache::Get_cache();
+    new_cache *new_cac = new_cache::Get_cache(100000);
     int i;
     for(i = 0; i < 20000; i++){
         block[i] = new char[4097];

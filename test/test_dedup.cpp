@@ -20,11 +20,15 @@ int main(int argc, char **argv){
     char devname[30];
     int mode = 0;
     int cache_mode = 0;
+    int cache_size = 0;
+    int is_cache = 0;
     dedup ded;
     strcpy(path, argv[1]);
     strcpy(devname, argv[2]);
     mode = atoi(argv[3]);
     cache_mode = atoi(argv[4]);
+    is_cache = atoi(argv[5]);
+    cache_size = atoi(argv[6]);
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -35,6 +39,6 @@ int main(int argc, char **argv){
 /////////////////////////////////////////////////////////////////////////////
 ///                              test dedup                               ///
 /////////////////////////////////////////////////////////////////////////////
-    ded.dedup_func(path, devname, mode, cache_mode);
+    ded.dedup_func(path, devname, mode, cache_mode, is_cache, cache_size);
     return 0;
 }

@@ -4,10 +4,11 @@
 
 #include "new_cache.h"
 
-new_cache::new_cache() {
+new_cache::new_cache(int size) {
     cache_size = 0;
     head_cache = NULL;
     tail_cache = NULL;
+    m_cache_size = size;
     ini_pool();
 
 }
@@ -18,12 +19,12 @@ new_cache::~new_cache() {
 
 new_cache* new_cache::cache_instance = NULL;
 
-new_cache *new_cache::Get_cache() {
+new_cache *new_cache::Get_cache(int size) {
     static pthread_mutex_t mu = PTHREAD_MUTEX_INITIALIZER;
     if(cache_instance == NULL){
         pthread_mutex_lock(&mu);
         if(cache_instance == NULL)
-            cache_instance = new new_cache();
+            cache_instance = new new_cache(size);
         pthread_mutex_unlock(&mu);
     }
     return cache_instance;
