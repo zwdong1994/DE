@@ -78,6 +78,7 @@ private:
     int dedup_noread_mt(char bch_result[], char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag);
     int test_crash(char *reference1, char *reference2);
     int test_all_crash();
+    void prefetch();
     int crash_number;
     int fade_crash_number;
     int is_cache;
@@ -89,7 +90,9 @@ private:
 
     int file_number;
 
-
+    unsigned long prefetch_offset;
+    int prefetch_flag;
+    int prefetch_num;
 
     para *head_pthread_para;
 

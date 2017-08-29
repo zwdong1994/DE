@@ -107,6 +107,17 @@ int mt::insert_mt(char *ecc_code, char chunk_reference[], int length_ecc) {
     return 0;
 }
 
+int mt::offset_exist(unsigned long offset, std::string &get_str) {
+    std::map<unsigned long, std::string>::iterator iter_offset_ecc;
+    iter_offset_ecc = offset_ecc.find(offset);
+    if(iter_offset_ecc != offset_ecc.end()){
+        get_str = offset_ecc[offset];
+        return 1;
+    }
+    else
+        return 0;
+}
+
 int write_block(unsigned long offset, char *chunk_reference, double &elpstime) {
 
     double stat_t = 0.0, end_t = 0.0;

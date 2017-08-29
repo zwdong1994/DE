@@ -29,6 +29,7 @@ public:
     double time_total;
     uint64_t write_time;
     std::map<unsigned long, std::string> offset_ecc;
+    int offset_exist(unsigned long offset, std::string &get_str);
 
 
 private:

@@ -48,6 +48,9 @@ dedup::dedup() {
     chunk_not_dup = 0;
     block_id = 0;
     head_10000_time = 0.0;
+    prefetch_offset = 0;
+    prefetch_flag = 0;
+    prefetch_num = 10;
 
     code_mode = 0;
     cache_mode = 0;
@@ -312,6 +315,13 @@ int dedup::file_reader_nonewcache(char *path) {
         if(mt_flag == 2){
             chunk_not_dup++;
             write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
+            //ti.cp_all(0.2, 0);
+            //time_total += 0.2;
+        }
+        if(mt_flag == 3){
+            chunk_not_dup++;
+            write_block(mp -> alloc_addr_point++, (char *)chk_cont, write_elps);
             time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
@@ -733,7 +743,16 @@ int dedup::file_reader(char *path) {
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
         }
+        if(mt_flag == 3){
+            chunk_not_dup++;
+            write_block(mp -> alloc_addr_point++, (char *)chk_cont, write_elps);
+            time_total_write += write_elps;
+            //ti.cp_all(0.2, 0);
+            //time_total += 0.2;
+        }
         end_t = ti.get_time();
+        if(is_cache && prefetch_flag)
+            prefetch();
         time_total += 0.0005;//Add cache time
         //ti.cp_all((end_t - stat_t) * 1000, 1);
         time_total += (end_t - stat_t) * 1000;
@@ -1344,14 +1363,16 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
                     if(memcmp(read_buf, chk_cont, READ_LENGTH) == 0){ //chunk exist
                         end_xr_t = ti.get_time();
                         time_total_xr += (end_xr_t - stat_xr_t) * 1000;
+                        prefetch_flag = 1;
+                        prefetch_offset = head_addr -> offset;
                         return 1;
                     }
-                    head_addr = head_addr -> next;
+//                    head_addr = head_addr -> next;
                 }
                 end_xr_t = ti.get_time();
                 time_total_xr += (end_xr_t - stat_xr_t) * 1000;
 //                chunk_not_dup++; //count the block that not deduplicate
-                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){ //insert succeed and ecc crash
+                { //insert succeed and ecc crash
                     struct crash_test *cp = NULL;
                     cp = new crash_test;
                     memcpy(cp -> reference1, read_buf, READ_LENGTH);
@@ -1359,13 +1380,13 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
                     cp -> next = cra_t;
                     cra_t = cp;
                     ++fade_crash_number;
-                    return 2;
+                    return 3;
                 }
-                else{
+/*                else{
                     std::cout << "insert mt error!" << std::endl;
                     exit(-1);
                 }
-            }
+*/           }
         }
     }
     else{ //bloom missed
@@ -1516,6 +1537,24 @@ int dedup::avertime_distribute_less(double &elpstime) {
     }
 
     return 0;
+}
+
+void dedup::prefetch() {
+    int i = 0;
+    std::string ecc;
+    char read_buf[4097];
+    struct addr *head_addr = new addr;
+    for(; i < prefetch_num; ++i){
+        if(mp -> offset_exist(prefetch_offset + i, ecc)){//offset is exist in the storage device
+            head_addr -> offset = prefetch_offset + i;
+            read_block(head_addr, read_buf);
+            dedup_cache(ecc, (char *)read_buf, 1);
+        } else{
+            break;
+        }
+    }
+    prefetch_flag = 0;
+    delete head_addr;
 }
 
 
