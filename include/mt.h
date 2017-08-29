@@ -28,6 +28,7 @@ public:
     unsigned long alloc_addr_point;
     double time_total;
     uint64_t write_time;
+    std::map<unsigned long, std::string> offset_ecc;
 
 
 private:
@@ -42,6 +43,7 @@ private:
     unsigned long max_size_addr; //the maximum block address
 
     std::map<std::string, struct addr*> mt_container; //save(ECC or hash code, block address)
+
 
 
 };
