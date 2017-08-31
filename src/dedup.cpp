@@ -1556,7 +1556,3 @@ void dedup::prefetch() {
     prefetch_flag = 0;
     delete head_addr;
 }
-
-
-
-
