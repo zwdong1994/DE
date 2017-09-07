@@ -321,12 +321,15 @@ int dedup::file_reader_nonewcache(char *path) {
         }
         if(mt_flag == 3){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point++, (char *)chk_cont, write_elps);
+            write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
+            ++mp->alloc_addr_point;
             time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
         }
         end_t = ti.get_time();
+        if(is_cache && prefetch_flag)
+            prefetch();
         time_total += 0.0005;//Add cache time
         //ti.cp_all((end_t - stat_t) * 1000, 1);
         time_total += (end_t - stat_t) * 1000;
@@ -745,7 +748,8 @@ int dedup::file_reader(char *path) {
         }
         if(mt_flag == 3){
             chunk_not_dup++;
-            write_block(mp -> alloc_addr_point++, (char *)chk_cont, write_elps);
+            write_block(mp -> alloc_addr_point -1, (char *)chk_cont, write_elps);
+            ++mp->alloc_addr_point;
             time_total_write += write_elps;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
