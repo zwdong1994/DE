@@ -51,6 +51,7 @@ dedup::dedup() {
     prefetch_offset = 0;
     prefetch_flag = 0;
     prefetch_num = 10;
+    collision_write_num = 0;
 
     code_mode = 0;
     cache_mode = 0;
@@ -119,7 +120,7 @@ dedup::~dedup() {
             else
                 sprintf(aver_time_section, "%f-~", i*0.001);
             std::cout<<std::left<<std::setw(30)<<aver_time_section
-                     <<std::left<<std::setw(30)<< 100 * ((double)time_collect_num[i] / chunk_num) << std::endl;
+                     <<std::left<<std::setw(30)<< ((double)time_collect_num[i] / chunk_num) << std::endl;
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::cout<<"************************************************************************************"
@@ -150,6 +151,7 @@ dedup::~dedup() {
         if(chunk_not_dup > 0){
             std::cout << "The dedupe rate is " <<  (chunk_num - chunk_not_dup) * 100.0 / chunk_num <<"%"<<std::endl;
             std::cout << "The not dedupe chunk number is " << chunk_not_dup << std::endl;
+            std::cout << "The collision write number is " << collision_write_num << std::endl;
         }
 
         std::cout << "The average time is " << time_aver <<"ms"<< std::endl<<std::endl;
@@ -176,7 +178,7 @@ dedup::~dedup() {
  * cache_size: decide the size of the cache.
  */
 
-int dedup::dedup_func(char *path, char *dev, int mode, int cac_mode, int cache_flag, int cache_size) {
+int dedup::dedup_func(char *path, char *dev, int mode, int cac_mode, int cache_flag, int cache_size, int prefetch_length) {
     mp = mt::Get_mt(dev);
     if(cache_size <0){
         std::cout<< "Error cache size!" << std::endl;
@@ -189,8 +191,10 @@ int dedup::dedup_func(char *path, char *dev, int mode, int cac_mode, int cache_f
     is_cache = cache_flag;
     if(cache_size == 0)
         is_cache = 0;
-    if(is_cache)
+    if(is_cache) {
         cac = new_cache::Get_cache(cache_size);
+        prefetch_num = prefetch_length;
+    }
     if(mode >= 0 && mode <=3)
         code_mode = mode;
     else{
@@ -230,7 +234,7 @@ void dedup::travel_dir_nonewcache(char *path) {
             if(strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
                 continue;
             sprintf(child_path,"%s/%s",path,ent->d_name);
-            travel_dir(child_path);
+            travel_dir_nonewcache(child_path);
         }
         else{
             sprintf(child_path,"%s/%s",path,ent->d_name);
@@ -324,6 +328,7 @@ int dedup::file_reader_nonewcache(char *path) {
             write_block(mp -> alloc_addr_point - 1, (char *)chk_cont, write_elps);
             ++mp->alloc_addr_point;
             time_total_write += write_elps;
+            ++collision_write_num;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
         }
@@ -751,6 +756,7 @@ int dedup::file_reader(char *path) {
             write_block(mp -> alloc_addr_point -1, (char *)chk_cont, write_elps);
             ++mp->alloc_addr_point;
             time_total_write += write_elps;
+            ++collision_write_num;
             //ti.cp_all(0.2, 0);
             //time_total += 0.2;
         }

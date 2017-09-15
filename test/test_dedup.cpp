@@ -22,6 +22,7 @@ int main(int argc, char **argv){
     int cache_mode = 0;
     int cache_size = 0;
     int is_cache = 0;
+    int prefetch_length = 0;
     dedup ded;
     strcpy(path, argv[1]);
     strcpy(devname, argv[2]);
@@ -29,6 +30,7 @@ int main(int argc, char **argv){
     cache_mode = atoi(argv[4]);
     is_cache = atoi(argv[5]);
     cache_size = atoi(argv[6]);
+    prefetch_length = atoi(argv[7]);
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -39,6 +41,6 @@ int main(int argc, char **argv){
 /////////////////////////////////////////////////////////////////////////////
 ///                              test dedup                               ///
 /////////////////////////////////////////////////////////////////////////////
-    ded.dedup_func(path, devname, mode, cache_mode, is_cache, cache_size);
+    ded.dedup_func(path, devname, mode, cache_mode, is_cache, cache_size, prefetch_length);
     return 0;
 }

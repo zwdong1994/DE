@@ -111,7 +111,7 @@ int mt::offset_exist(unsigned long offset, std::string &get_str) {
 //    std::map<unsigned long, std::string>::iterator iter_offset_ecc;
 //    iter_offset_ecc = offset_ecc.find(offset);
 //    if(iter_offset_ecc != offset_ecc.end()){
-    if(offset >= alloc_addr_point){
+    if(offset < alloc_addr_point){
         get_str = offset_ecc[offset];
         return 1;
     }

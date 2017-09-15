@@ -17,7 +17,7 @@
 #define READ_LENGTH 4096
 #define PTHREAD_NUM 6
 #define CONFIG_M 8
-#define CONFIG_T 13
+#define CONFIG_T 16
 #define CODE_LENGTH 16
 #define SHA256_CODE_LENGTH 32
 #define SHA1_CODE_LENGTH 20
@@ -34,7 +34,7 @@ public:
 
     void travel_dir(char path[]);
     void travel_dir_nonewcache(char path[]);
-    int dedup_func(char path[], char dev[], int mode, int cache_mode, int cache_flag, int cache_size);
+    int dedup_func(char path[], char dev[], int mode, int cache_mode, int cache_flag, int cache_size, int prefetch_length);
     int file_reader(char *path);
     int file_reader_nonewcache(char *path);
     int md5_file_reader(char *c_path);
@@ -55,6 +55,7 @@ public:
     uint64_t chunk_not_dup;
     uint64_t read_number;
     uint64_t read_10000_num;
+    uint64_t collision_write_num;
 
 private:
 
