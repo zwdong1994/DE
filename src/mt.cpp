@@ -79,7 +79,7 @@ struct addr* mt::Get_addr(char *ecc_code, int length_ecc) {
 
 }
 
-int mt::insert_mt(char *ecc_code, char chunk_reference[], int length_ecc) {
+int mt::insert_mt(char *ecc_code, char chunk_reference[], int length_ecc, int cache_flag) {
     struct addr *p = NULL;
     p = new addr;
 
@@ -89,7 +89,8 @@ int mt::insert_mt(char *ecc_code, char chunk_reference[], int length_ecc) {
         str = ecc_code;
         p -> offset = alloc_addr_point;
         p -> next = NULL;
-        offset_ecc[alloc_addr_point] = ecc_code; //record the ecc of every allocated address.
+        if(cache_flag)
+            offset_ecc[alloc_addr_point] = ecc_code; //record the ecc of every allocated address.
         alloc_addr_point++; //allocate succeed
         if(mt_container[str] != NULL){
             p -> next = (struct addr*)mt_container[str];

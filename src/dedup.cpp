@@ -52,6 +52,7 @@ dedup::dedup() {
     prefetch_flag = 0;
     prefetch_num = 10;
     collision_write_num = 0;
+    only_ecc = 0;
 
     code_mode = 0;
     cache_mode = 0;
@@ -152,13 +153,15 @@ dedup::~dedup() {
             std::cout << "The dedupe rate is " <<  (chunk_num - chunk_not_dup) * 100.0 / chunk_num <<"%"<<std::endl;
             std::cout << "The not dedupe chunk number is " << chunk_not_dup << std::endl;
             std::cout << "The collision write number is " << collision_write_num << std::endl;
+            std::cout << "The ECC number is " << only_ecc << std::endl;
+            std::cout << "The ratio that use ECC as fingerprint is: " << (chunk_num - only_ecc) * 100.0 / chunk_num <<"%"<<std::endl;
         }
 
         std::cout << "The average time is " << time_aver <<"ms"<< std::endl<<std::endl;
         if(hash_time > 0){
             std::cout << "The average hash time is " << hash_time / chunk_num <<"ms"<< std::endl;
         }
-        test_all_crash();
+        //test_all_crash();
         std::cout << "Fade crash number is " << fade_crash_number << std::endl;
         std::cout << "Crash number is " << crash_number << std::endl;
         std::cout << "Read number is: " << read_number << std::endl;
@@ -1336,7 +1339,7 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
         }
         else if (cache_flag == 2) {//cache crash
 
-            if (mp->insert_mt(bch_result, chk_cont, bch_lengh)) {
+            if (mp->insert_mt(bch_result, chk_cont, bch_lengh, is_cache)) {
                 return 2;
             }
             else {
@@ -1351,7 +1354,8 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
             head_addr = mp -> Get_addr(bch_result, bch_lengh);
             if(head_addr == NULL){ //ecc and its' block is not in the mt table
 //                chunk_not_dup++; //count the block that not deduplicate
-                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
+                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh, is_cache)){
+                    ++only_ecc;
                     return 2;
                 }
                 else{
@@ -1383,12 +1387,12 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
                 time_total_xr += (end_xr_t - stat_xr_t) * 1000;
 //                chunk_not_dup++; //count the block that not deduplicate
                 { //insert succeed and ecc crash
-                    struct crash_test *cp = NULL;
-                    cp = new crash_test;
-                    memcpy(cp -> reference1, read_buf, READ_LENGTH);
-                    memcpy(cp -> reference2, chk_cont, READ_LENGTH);
-                    cp -> next = cra_t;
-                    cra_t = cp;
+                    //struct crash_test *cp = NULL;
+                    //cp = new crash_test;
+                   // memcpy(cp -> reference1, read_buf, READ_LENGTH);
+                   // memcpy(cp -> reference2, chk_cont, READ_LENGTH);
+                    //cp -> next = cra_t;
+                   // cra_t = cp;
                     ++fade_crash_number;
                     return 3;
                 }
@@ -1403,8 +1407,10 @@ int dedup::dedup_mt(char *bch_result, char *chk_cont, int bch_lengh, int cache_f
 
         //cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
 //        chunk_not_dup++; //count the block that not deduplicate
-        if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
+        if(mp -> insert_mt(bch_result, chk_cont, bch_lengh, is_cache)) { //insert succeed
+            ++only_ecc;
             return 2;
+        }
         else{
             std::cout << "insert mt error!" << std::endl;
             exit(-1);
@@ -1425,7 +1431,7 @@ int dedup::dedup_noread_mt(char *bch_result, char *chk_cont, int bch_lengh, int 
         }
         else if (cache_flag == 2) {//cache crash
 
-            if (mp->insert_mt(bch_result, chk_cont, bch_lengh)) {
+            if (mp->insert_mt(bch_result, chk_cont, bch_lengh, is_cache)) {
                 return 2;
             }
             else {
@@ -1440,7 +1446,7 @@ int dedup::dedup_noread_mt(char *bch_result, char *chk_cont, int bch_lengh, int 
             head_addr = mp -> Get_addr(bch_result, bch_lengh);
             if(head_addr == NULL){ //ecc and its' block is not in the mt table
 //                chunk_not_dup++; //count the block that not deduplicate
-                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)){
+                if(mp -> insert_mt(bch_result, chk_cont, bch_lengh, is_cache)){
                     return 2;
                 }
                 else{
@@ -1485,7 +1491,7 @@ int dedup::dedup_noread_mt(char *bch_result, char *chk_cont, int bch_lengh, int 
 
         //cac -> cache_insert(bch_result, chk_cont, bch_lengh); //insert the block into the cache
 //        chunk_not_dup++; //count the block that not deduplicate
-        if(mp -> insert_mt(bch_result, chk_cont, bch_lengh)) //insert succeed
+        if(mp -> insert_mt(bch_result, chk_cont, bch_lengh, is_cache)) //insert succeed
             return 2;
         else{
             std::cout << "insert mt error!" << std::endl;
@@ -1508,14 +1514,14 @@ int dedup::test_crash(char *reference1, char *reference2) {
     return 0;
 }
 
-int dedup::test_all_crash() {
+/*int dedup::test_all_crash() {
     struct crash_test *p = cra_t;
     while(p != NULL){
         test_crash(p -> reference1, p ->reference2);
         p = p -> next;
     }
     return 0;
-}
+}*/
 
 int dedup::avertime_distribute(double &elpstime) {
     int integer;

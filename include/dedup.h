@@ -17,16 +17,16 @@
 #define READ_LENGTH 4096
 #define PTHREAD_NUM 6
 #define CONFIG_M 8
-#define CONFIG_T 16
-#define CODE_LENGTH 16
+#define CONFIG_T 13
+#define CODE_LENGTH 13
 #define SHA256_CODE_LENGTH 32
 #define SHA1_CODE_LENGTH 20
 
-struct crash_test{
+/*struct crash_test{
     char reference1[READ_LENGTH];
     char reference2[READ_LENGTH];
     struct crash_test *next;
-};
+};*/
 class dedup{
 public:
     dedup();
@@ -53,6 +53,7 @@ public:
     double time_total_xr;
     double hash_time;
     uint64_t chunk_not_dup;
+    uint64_t only_ecc;
     uint64_t read_number;
     uint64_t read_10000_num;
     uint64_t collision_write_num;
@@ -78,7 +79,7 @@ private:
     int dedup_mt(char bch_result[], char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag);
     int dedup_noread_mt(char bch_result[], char *chk_cont, int bch_lengh, int cache_flag, int bloom_flag);
     int test_crash(char *reference1, char *reference2);
-    int test_all_crash();
+//    int test_all_crash();
     void prefetch();
     int crash_number;
     int fade_crash_number;

@@ -24,7 +24,7 @@ public:
     static mt *Get_mt(char *devname);
     static mt *mt_instance;
     struct addr* Get_addr(char ecc_code[], int length_ecc);  //get the chunk addr from the mt list
-    int insert_mt(char ecc_code[], char chunk_reference[], int length_ecc); //insert a new ecc-addr pair to the mt list and in the mean time write the block
+    int insert_mt(char ecc_code[], char chunk_reference[], int length_ecc, int cache_flag); //insert a new ecc-addr pair to the mt list and in the mean time write the block
     unsigned long alloc_addr_point;
     double time_total;
     uint64_t write_time;
