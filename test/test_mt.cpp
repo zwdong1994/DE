@@ -49,7 +49,7 @@ int main(){
 
     for(i = 0; i < 100; i++){
         stat_t = ti.get_time();
-        if( !mt_index -> insert_mt(ecc_code[i], block[i], 32)){
+        if( !mt_index -> insert_mt(ecc_code[i], block[i], 32, 0)){
             std::cout << "insert error" << std::endl;
             return 0;
         }

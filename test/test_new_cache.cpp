@@ -35,7 +35,7 @@ int main(void){
     double time_total = 0.0, stat_time = 0.0, end_time = 0.0;
     std::string mid_str;
     cache *cac = cache::Get_cache();
-    new_cache *new_cac = new_cache::Get_cache(100000);
+    new_cache *new_cac = new_cache::Get_cache(20000);
     int i;
     for(i = 0; i < 20000; i++){
         block[i] = new char[4097];
@@ -53,11 +53,11 @@ int main(void){
         ecc_find[i] = new char[33];
         random_string(ecc_find[i], 32);
     }
-/*
+
 /////////////////////////////////////////////////////////////////////////////
 ///                      new cache test insert                            ///
 /////////////////////////////////////////////////////////////////////////////
-    char chunk[4097];
+/*    char chunk[4097];
     for(i = 0; i < 10001; i++){
         random_string(chunk, 4096);
         chunk[4096] = '\0';
@@ -191,6 +191,32 @@ int main(void){
     exist = 0;
     crash = 0;
 
+    time_total = 0.0;
+    for(i = 0; i < 20000; i++){
+        mid_str = ecc_find[i];
+        stat_time = get_time();
+        flag = new_cac -> cache_find(mid_str, block[i]);
+        end_time = get_time();
+        time_total += (end_time - stat_time) * 1000;
+        if( flag == 1){
+            exist++;
+        }
+        else if( flag == 2){
+            crash++;
+        }
+        else {
+            not_exist++;
+
+        }
+    }
+    std::cout<< "exist: " << exist << std::endl
+             << "crash: " << crash << std::endl
+             << "not exist: " << not_exist << std::endl;
+    std::cout << "New cache find average time is : " << time_total / 20000 << std::endl;
+
+    not_exist = 0;
+    exist = 0;
+    crash = 0;
 /////////////////////////////////////////////////////////////////////////////
 ///                              test new cache find                      ///
 /////////////////////////////////////////////////////////////////////////////

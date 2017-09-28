@@ -309,6 +309,7 @@ int dedup::file_reader_nonewcache(char *path) {
 //        ti.cp_all((end_t - stat_t) * 1000, 0);
         /////////////////////////////////////////////////////////////
         ByteToHexStr(hv, bch_result, CODE_LENGTH);
+        bch_result[2 * CODE_LENGTH] = '\0';
         mid_str = bch_result;
         bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
         /////////////////////////////////////////////////////////////
@@ -355,8 +356,8 @@ int dedup::file_reader_nonewcache(char *path) {
 }
 
 int dedup::md5_file_reader_nonewcache(char *path) {
-    uint8_t hv[CODE_LENGTH + 1];
-    char bch_result[2 * CODE_LENGTH + 1];
+    uint8_t hv[MD5_CODE_LENGTH+ 1];
+    char bch_result[2 * MD5_CODE_LENGTH + 1];
     FILE *fp = NULL;
     uint8_t chk_cont[4097];
     int bloom_flag = 0;
@@ -366,6 +367,7 @@ int dedup::md5_file_reader_nonewcache(char *path) {
     double end_t = 0.0;
     double write_elps = 0.0;
     char blk_num_str[30];
+    std::string mid_str;
     cp_t ti;
 
     if((fp = fopen(path, "r")) == NULL){
@@ -389,14 +391,12 @@ int dedup::md5_file_reader_nonewcache(char *path) {
                      <<std::left<<std::setw(30)<< time_total / 1000 <<std::endl;
             head_10000_time = time_total;
         }
-        memset(hv, 0, CODE_LENGTH + 1);
-        memset(bch_result, 0, 2 * CODE_LENGTH + 1);
-//        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
-
-
+        memset(hv, 0, MD5_CODE_LENGTH + 1);
+        memset(bch_result, 0, 2 * MD5_CODE_LENGTH + 1);
         stat_t = ti.get_time();
         MD5((unsigned char *)chk_cont, (size_t)4096, (unsigned char *)hv);
         end_t = ti.get_time();
@@ -405,12 +405,12 @@ int dedup::md5_file_reader_nonewcache(char *path) {
         hash_time += (end_t - stat_t) * 1000;
         mid_elpstime += (end_t - stat_t) * 1000;
         /////////////////////////////////////////////////////////////
-        ByteToHexStr(hv, bch_result, CODE_LENGTH);
-        bloom_flag = dedup_bloom(bch_result, 2 * CODE_LENGTH);
+        ByteToHexStr(hv, bch_result, MD5_CODE_LENGTH);
+        bloom_flag = dedup_bloom(bch_result, 2 * MD5_CODE_LENGTH);
         /////////////////////////////////////////////////////////////
         stat_t = ti.get_time();
 //        cache_flag = dedup_cache(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, bloom_flag);
-        mt_flag = dedup_noread_mt(bch_result, (char *)chk_cont, 2 * CODE_LENGTH, cache_flag, bloom_flag);
+        mt_flag = dedup_noread_mt(bch_result, (char *)chk_cont, 2 * MD5_CODE_LENGTH, cache_flag, bloom_flag);
 
         if(mt_flag == 2){
             chunk_not_dup++;
@@ -447,6 +447,7 @@ int dedup::sha256_file_reader_nonewcache(char *path) {
     double end_t = 0.0;
     double write_elps = 0.0;
     char blk_num_str[30];
+    std::string mid_str;
     cp_t ti;
 
     if((fp = fopen(path, "r")) == NULL){
@@ -470,6 +471,8 @@ int dedup::sha256_file_reader_nonewcache(char *path) {
                      <<std::left<<std::setw(30)<< time_total / 1000 <<std::endl;
             head_10000_time = time_total;
         }
+
+
         memset(hv, 0, SHA256_CODE_LENGTH + 1);
         memset(bch_result, 0, 2 * SHA256_CODE_LENGTH + 1);
 //        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference
@@ -529,6 +532,7 @@ int dedup::sha1_file_reader_nonewcache(char *path) {
     double end_t = 0.0;
     double write_elps = 0.0;
     char blk_num_str[30];
+    std::string mid_str;
     cp_t ti;
     if((fp = fopen(path, "r")) == NULL){
         std::cout<<"Open file error!The file name is: "<<path<<std::endl;
@@ -551,6 +555,8 @@ int dedup::sha1_file_reader_nonewcache(char *path) {
                      <<std::left<<std::setw(30)<< time_total / 1000 <<std::endl;
             head_10000_time = time_total;
         }
+
+
         memset(hv, 0, SHA1_CODE_LENGTH + 1);
         memset(bch_result, 0, 2 * SHA1_CODE_LENGTH + 1);
 //        encode_bch(bch, chk_cont, READ_LENGTH, hv); //get bch code from a block reference

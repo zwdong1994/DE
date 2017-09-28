@@ -19,6 +19,7 @@
 #define CONFIG_M 8
 #define CONFIG_T 13
 #define CODE_LENGTH 13
+#define MD5_CODE_LENGTH 16
 #define SHA256_CODE_LENGTH 32
 #define SHA1_CODE_LENGTH 20
 
